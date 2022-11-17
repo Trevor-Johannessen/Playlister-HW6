@@ -48,13 +48,7 @@ function SongCard(props) {
         <div
             key={index}
             id={'song-' + index + '-card'}
-            onDragStart={handleDragStart}
-            onDragOver={handleDragOver}
-            onDragEnter={handleDragEnter}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
             draggable="true"
-            onClick={handleClick}
         >
             {index + 1}. <a
                 id={'song-' + index + '-link'}

@@ -30,44 +30,18 @@ function ListCard(props) {
         setOpened(!opened);
         opened ? console.log('opened') : console.log('closed');
     }
-
-
-    let publishedFeatures;
-
-    // if published
-    if(true)
-    publishedFeatures = 
-    (
-    <div>
-        <span className='list-card-listens'>Listens: <span style={{color: 'red'}}>1234567{playlist.listens}</span></span>
-        <span className="list-card-published">Published: <span style={{color: 'green'}}>{playlist.createdAt}</span></span>
-        <span className='list-card-ratings-like'><ThumbUpIcon/>6969{playlist.likes}</span><span className='list-card-ratings-dislike'><ThumbDownIcon/>420{playlist.dislikes}</span>
-    </div>
-    )
     
-    let cardElement =
-        <ListItem
-            id={playlist._id}
-            key={playlist._id}
-            sx={{}}
-            button
-            onClick={(event) => {
-                console.log(playlist)
-            }}
-        >
-            <div className='list-card'>
-                {/* TODO: ADD DELETE BUTTON WHEN USER OWNS PLAYLIST */}
-                <span className='list-card-title'>{playlist.name}</span>
-                <span className="list-card-owner">By: <Link to=''>{playlist.ownerEmail}</Link></span>
-                {publishedFeatures}
-                <button className="list-card-duplicate-button">Duplicate</button>
-                <span className='list-card-expand-icon'><KeyboardDoubleArrowDownIcon onClick={reverseOpenState}/></span>
-            </div>
-        </ListItem>
+    let publishedFeatures;
+    let cardExpandIcon = (<span className='list-card-expand-icon'><KeyboardDoubleArrowDownIcon onClick={reverseOpenState}/></span>);
+    let cardClass = 'list-card';
+    let songCards;
 
-    // if Opened
     if(opened){
-        let songCards = 
+        cardClass += '-opened'
+        cardExpandIcon = (<span className='list-card-expand-icon'><KeyboardDoubleArrowUpIcon onClick={reverseOpenState}/></span>)
+        songCards = (
+        <div className='list-card-selector'>
+        {
         playlist.songs.map((song, index) => (
             <SongCard
                 id={'playlist-song-' + (index)}
@@ -76,8 +50,23 @@ function ListCard(props) {
                 song={song}
             />
         ))
+        }
+        </div>)
+    }
 
-        cardElement =
+    
+    // if published
+    if(true)
+        publishedFeatures = 
+        (
+        <div>
+            <span className='list-card-listens'>Listens: <span style={{color: 'red'}}>1234567{playlist.listens}</span></span>
+            <span className="list-card-published">Published: <span style={{color: 'green'}}>{playlist.createdAt}</span></span>
+            <span className='list-card-ratings-like'><ThumbUpIcon/>6969{playlist.likes}</span><span className='list-card-ratings-dislike'><ThumbDownIcon/>420{playlist.dislikes}</span>
+        </div>
+        )
+    
+    let cardElement =
         <ListItem
             id={playlist._id}
             key={playlist._id}
@@ -87,18 +76,16 @@ function ListCard(props) {
                 store.setCurrentList(playlist)
             }}
         >
-            <div className='list-card-opened'>
+            <div className={cardClass}>
+                {/* TODO: ADD DELETE BUTTON WHEN USER OWNS PLAYLIST */}
                 <span className='list-card-title'>{playlist.name}</span>
                 <span className="list-card-owner">By: <Link to=''>{playlist.ownerEmail}</Link></span>
-                <div className='list-card-selector'>
-                    {songCards}
-                </div>
+                {songCards}
                 {publishedFeatures}
                 <button className="list-card-duplicate-button">Duplicate</button>
-                <span className='list-card-expand-icon'><KeyboardDoubleArrowUpIcon onClick={reverseOpenState}/></span>
+                {cardExpandIcon}
             </div>
         </ListItem>
-    }
 
     return (
         cardElement

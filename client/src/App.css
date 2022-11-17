@@ -301,10 +301,14 @@ body {
 #comments{
   width: 40%;
   height: 60%;
-  background-color: white;
+  background-color: lavender;
   position: absolute;
   top: 20%;
   right: 0%;
+  border-radius: 20px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: black;
 }
 
 
