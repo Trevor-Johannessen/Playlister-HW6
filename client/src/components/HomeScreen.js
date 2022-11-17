@@ -55,7 +55,6 @@ const HomeScreen = () => {
                 {
                     listCard
                 }
-                <MUIDeleteModal />
             </div>
 
             {playerOpen ? /* TODO: Add youtube player */ null : <Comments/>}
