@@ -346,6 +346,25 @@ body {
   margin-left:3px;
 }
 
+.player-buttons{
+  position: absolute;
+  top: 16%;
+  left: 60%;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.player-button{
+  width: 8%;
+  border-width: 2px 2px 0px 2px;
+  border-color: black;
+  border-style: solid;
+  border-radius: 3px 3px 0px 0px;
+  padding:5px;
+  text-align: center;
+  margin-right: 2px;
+}
 
 .unselected-list-card:hover {
   cursor: pointer;

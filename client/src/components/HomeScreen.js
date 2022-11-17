@@ -30,7 +30,8 @@ const HomeScreen = () => {
        playerOpen ? console.log('opened') : console.log('closed');
     }
     
-
+    let youtubeButtonColor = playerOpen ? {backgroundColor : 'white'} : {alpha: 0};
+    let commentButtonColor = playerOpen ? {alpha: 0} : {backgroundColor : 'white'};
 
     let listCard = "";
     if (store) {
@@ -56,7 +57,10 @@ const HomeScreen = () => {
                     listCard
                 }
             </div>
-
+            <div className='player-buttons'>
+                <div id='youtube-button' className='player-button' style={youtubeButtonColor} onClick={swapPlayerView}>Player</div>
+                <div id='comments-button' className='player-button' style={commentButtonColor} onClick={swapPlayerView}>Comments</div>
+            </div>
             {playerOpen ? /* TODO: Add youtube player */ null : <Comments/>}
         </div>)
 }
