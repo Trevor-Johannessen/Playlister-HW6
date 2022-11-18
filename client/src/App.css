@@ -303,6 +303,8 @@ body {
 }
 
 #comments{
+  display: flex;
+  flex-direction: column;
   width: 40%;
   height: 57%;
   background-color: lavender;
@@ -315,10 +317,29 @@ body {
   border-color: black;
   padding-top: 10px;
   padding-bottom: 10px;
+}
+
+#comment-textbox{
+  width: 96%;
+  padding-top: 10px;
+  margin-left: 2%;
+  margin-top: 2%;
+  border-top: 1px;
+  border-top-color: black;
+  border-top-style: solid;
+
+}
+
+.comment-textbox-mui .MuiOutlinedInput-root{
+  border-radius: 10px;
+}
+
+#comment-card-holder{
   display: flex;
   flex-direction: column;
   align-items: center;
   overflow: scroll;
+  height: 100%;
 }
 
 .comment-card{
