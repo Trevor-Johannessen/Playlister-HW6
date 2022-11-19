@@ -45,6 +45,11 @@ export const updatePlaylistById = (id, playlist) => {
         playlist : playlist
     })
 }
+export const commentPlaylistById = (id, comment) => {
+    return api.put(`/playlist/comments/${id}`, {
+        comment : comment
+    })
+}
 
 const apis = {
     createPlaylist,
@@ -52,7 +57,8 @@ const apis = {
     getPlaylistById,
     getPlaylistPairs,
     updatePlaylistById,
-    getPlaylists
+    getPlaylists,
+    commentPlaylistById
 }
 
 export default apis

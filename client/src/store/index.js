@@ -544,6 +544,27 @@ function GlobalStoreContextProvider(props) {
         // NOW MAKE IT OFFICIAL
         store.updateCurrentList();
     }
+
+    store.submitComment = function(comment){
+        if (store.currentList){
+            
+            async function asyncCommentCurrentList() {
+                console.log(store.currentList)
+                console.log('user = ')
+                console.log(auth.user)
+                const response = await api.commentPlaylistById(store.currentList._id, [`${auth.user.firstName} ${auth.user.lastName}`, comment]);
+                if (response.data.success) {
+                    store.currentList.comments.push([`${auth.user.firstName} ${auth.user.lastName}`, comment]);
+                    storeReducer({
+                        type: GlobalStoreActionType.SET_CURRENT_LIST,
+                        payload: store.currentList
+                    });
+                }
+            }
+            asyncCommentCurrentList();
+        }
+    }
+
     // THIS FUNCTION MOVES A SONG IN THE CURRENT LIST FROM
     // start TO end AND ADJUSTS ALL OTHER ITEMS ACCORDINGLY
     store.moveSong = function(start, end) {
@@ -627,6 +648,7 @@ function GlobalStoreContextProvider(props) {
     }
     store.updateCurrentList = function() {
         async function asyncUpdateCurrentList() {
+            console.log(store.currentList)
             const response = await api.updatePlaylistById(store.currentList._id, store.currentList);
             if (response.data.success) {
                 storeReducer({
