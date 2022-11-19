@@ -26,6 +26,12 @@ export default function Comments(props){
         }
     }
 
+    this.keyPress = (e) => {
+        if(e.keyCode == 13){
+           console.log('value', e.target.value);
+           // put the login here
+        }
+     }
 
     return (
         <div id='comments'>
@@ -33,7 +39,7 @@ export default function Comments(props){
                 {comments}
             </div>
             <div id='comment-textbox'>
-                <TextField className='comment-textbox-mui' size='small' id="outlined-basic" label="Comment" variant="outlined" sx={{width : '100%'}}/>
+                <TextField className='comment-textbox-mui' size='small' id="outlined-basic" label="Comment" variant="outlined" sx={{width : '100%'}} onKeyDown={this.keyPress}/>
             </div>
         </div>
     )
