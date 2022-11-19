@@ -27,7 +27,12 @@ export const createPlaylist = (newListName, newSongs, userEmail) => {
         // SPECIFY THE PAYLOAD
         name: newListName,
         songs: newSongs,
-        ownerEmail: userEmail
+        ownerEmail: userEmail,
+        comments: [],
+        likes: 0,
+        dislikes: 0,
+        listens: 0,
+        published: ""
     })
 }
 export const getPlaylists = () => api.get(`/playlists`)
