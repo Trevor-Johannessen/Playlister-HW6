@@ -396,6 +396,26 @@ function GlobalStoreContextProvider(props) {
             }
         }
         asyncLoadPlaylists();
+
+    }
+
+    store.loadUsersPlaylists = function (email) {
+        async function asyncLoadPlaylists() {
+            const response = await api.getUsersPlaylists(email);
+            if (response.data.success) {
+                let playlistArray = response.data.data;
+                console.log('playlistArray = ')
+                console.log(playlistArray)
+                storeReducer({
+                    type: GlobalStoreActionType.LOAD_PLAYLISTS,
+                    payload: playlistArray
+                });
+            }
+            else {
+                console.log("API FAILED TO GET THE Playlist");
+            }
+        }
+        asyncLoadPlaylists();
     }
     /*
     store.loadPlaylists = function () {

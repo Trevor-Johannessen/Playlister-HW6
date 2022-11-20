@@ -169,6 +169,18 @@ getPlaylists = async (req, res) => {
     }).catch(err => console.log(err))
 }
 
+getUsersPlaylists = async (req, res) => {
+    console.log(req.params.id)
+
+    await Playlist.find({ ownerEmail: req.params.id }, (err, playlists) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+        return res.status(200).json({ success: true, data: playlists })
+    }).catch(err => console.log(err))
+    
+}
+
 commentPlaylist = async (req, res) => {
     const body = req.body
     console.log(`commentBody = ${JSON.stringify(body)}`)
@@ -282,5 +294,6 @@ module.exports = {
     getPlaylistPairs,
     getPlaylists,
     updatePlaylist,
-    commentPlaylist
+    commentPlaylist,
+    getUsersPlaylists
 }

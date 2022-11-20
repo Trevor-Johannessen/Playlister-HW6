@@ -21,7 +21,7 @@ const HomeScreen = () => {
 
     useEffect(() => {
         store.loadPlaylists();
-        store.loadIdNamePairs();
+        //store.loadIdNamePairs();
     }, []);
 
 
@@ -38,7 +38,7 @@ const HomeScreen = () => {
         listCard = 
             <List sx={{ width: '100%', height: '100%'}}>
             {
-                store.idNamePairs.map((pair) => (
+                store.storedPlaylists.map((pair) => (
                     <ListCard
                         key={pair._id}
                         playlist={pair}
@@ -62,6 +62,7 @@ const HomeScreen = () => {
                 <div id='comments-button' className='player-button' style={commentButtonColor} onClick={swapPlayerView}>Comments</div>
             </div>
             {playerOpen ? /* TODO: Add youtube player */ null : <Comments/>}
+            <button onClick={() => store.loadUsersPlaylists('obama@gmail.com')}>Load Obamas Secret Playlists</button>
         </div>)
 }
 
