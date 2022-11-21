@@ -183,6 +183,17 @@ getUsersPlaylists = async (req, res) => {
     
 }
 
+getLoggedInUserPlaylists = async (req, res) => {
+    console.log(`Finding playlists of ${JSON.stringify(req.params.id)}`);
+    await Playlist.find({ ownerEmail: req.params.id },  (err, playlists) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+        return res.status(200).json({ success: true, data: playlists })
+    }).catch(err => console.log(err))
+}
+
+
 commentPlaylist = async (req, res) => {
     const body = req.body
     console.log(`commentBody = ${JSON.stringify(body)}`)
@@ -232,7 +243,6 @@ likePlaylist = async (req, res) => {
             error: 'You must provide a body to update',
         })
     }
-
     Playlist.findOne({ _id: req.params.id }, (err, playlist) => {
         if (err) {
             console.log('PLAYLIST NOT FOUND IN COMMENT')
@@ -393,5 +403,6 @@ module.exports = {
     commentPlaylist,
     getUsersPlaylists,
     likePlaylist,
-    dislikePlaylist
+    dislikePlaylist,
+    getLoggedInUserPlaylists
 }

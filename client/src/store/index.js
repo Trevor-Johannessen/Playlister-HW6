@@ -448,6 +448,25 @@ function GlobalStoreContextProvider(props) {
         }
         asyncLoadPlaylists();
     }
+
+    store.loadLoggedInUsersPlaylists = function () {
+        async function asyncLoadLoggedInPlaylists(){
+            const response = await api.getLoggedInUsersPlaylists(auth.user.email);
+            if(response.data.success){
+                let playlistArray = response.data.data;
+                console.log('playlistArray = ')
+                console.log(playlistArray)
+                storeReducer({
+                    type: GlobalStoreActionType.LOAD_PLAYLISTS,
+                    payload: playlistArray
+                });
+            }else{
+                console.log("API FAILED TO GET PLAYLISTS")
+            }
+        }
+        asyncLoadLoggedInPlaylists();
+    }
+
     /*
     store.loadPlaylists = function () {
         async function asyncGetPlaylists(){
