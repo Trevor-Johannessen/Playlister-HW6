@@ -51,6 +51,20 @@ export const commentPlaylistById = (id, comment) => {
         comment : comment
     })
 }
+export const likePlaylistById = (id, email, remove) => {
+    console.log("Sending like request");
+    return api.put(`/playlist/like/${id}`, {
+        email: email,
+        remove: remove
+    });
+}
+export const dislikePlaylistById = (id, email, remove) => {
+    console.log("Sending dislike request")
+    return api.put(`/playlist/dislike/${id}`, {
+        email: email,
+        remove: remove
+    })
+}
 
 const apis = {
     createPlaylist,
@@ -60,7 +74,9 @@ const apis = {
     updatePlaylistById,
     getPlaylists,
     commentPlaylistById,
-    getUsersPlaylists
+    getUsersPlaylists,
+    likePlaylistById,
+    dislikePlaylistById
 }
 
 export default apis

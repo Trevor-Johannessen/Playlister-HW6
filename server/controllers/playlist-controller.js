@@ -165,18 +165,20 @@ getPlaylists = async (req, res) => {
                 .status(404)
                 .json({ success: false, error: `Playlists not found` })
         }
-        return res.status(200).json({ success: true, data: playlists })
+        let filteredLists = playlists.filter((document) => document["published"] != "");
+        return res.status(200).json({ success: true, data: filteredLists })
     }).catch(err => console.log(err))
 }
 
 getUsersPlaylists = async (req, res) => {
     console.log(req.params.id)
 
-    await Playlist.find({ ownerEmail: req.params.id }, (err, playlists) => {
+    await Playlist.find({ ownerEmail: req.params.id },  (err, playlists) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
-        return res.status(200).json({ success: true, data: playlists })
+        let filteredLists = playlists.filter((document) => document["published"] != "");
+        return res.status(200).json({ success: true, data: filteredLists })
     }).catch(err => console.log(err))
     
 }
@@ -219,6 +221,100 @@ commentPlaylist = async (req, res) => {
                 })
             })
     })
+}
+likePlaylist = async (req, res) => {
+    console.log("In likePlaylist")
+    const body = req.body;
+    console.log(`commentBody = ${JSON.stringify(body)}`)
+    if (!body) {
+        return res.status(400).json({
+            success: false,
+            error: 'You must provide a body to update',
+        })
+    }
+
+    Playlist.findOne({ _id: req.params.id }, (err, playlist) => {
+        if (err) {
+            console.log('PLAYLIST NOT FOUND IN COMMENT')
+            return res.status(404).json({
+                err,
+                message: 'Playlist not found!',
+            })
+        }
+        if(body.remove){ // removing like
+            console.log("Removing like")
+            for(let i = 0; i < playlist.likes.length; i++){
+                if(playlist.likes[i] == body.email)
+                    playlist.likes.splice(i, 1);
+            }
+        }else{ // adding like
+            console.log("Adding like")
+            playlist.likes.push(body.email);
+        }
+        playlist
+            .save()
+            .then(() => {
+                console.log("SUCCESS!!!");
+                return res.status(200).json({
+                    success: true,
+                    id: playlist._id,
+                    message: 'Playlist updated!',
+                })
+            })
+            .catch(error => {
+                console.log("FAILURE: " + JSON.stringify(error));
+                return res.status(404).json({
+                    error,
+                    message: 'Playlist not updated!',
+                })
+            })
+    });
+}
+dislikePlaylist = async (req, res) => {
+    console.log("In Dislike")
+    const body = req.body;
+    console.log(`commentBody = ${JSON.stringify(body)}`)
+    if (!body) {
+        return res.status(400).json({
+            success: false,
+            error: 'You must provide a body to update',
+        })
+    }
+
+    Playlist.findOne({ _id: req.params.id }, (err, playlist) => {
+        if (err) {
+            console.log('PLAYLIST NOT FOUND IN COMMENT')
+            return res.status(404).json({
+                err,
+                message: 'Playlist not found!',
+            })
+        }
+        if(body.remove){ // removing dislike
+            for(let i = 0; i < playlist.dislikes.length; i++){
+                if(playlist.dislikes[i] == body.email)
+                    playlist.dislikes.splice(i, 1);
+            }
+        }else{ // adding dislike
+            playlist.dislikes.push(body.email);
+        }
+        playlist
+            .save()
+            .then(() => {
+                console.log("SUCCESS!!!");
+                return res.status(200).json({
+                    success: true,
+                    id: playlist._id,
+                    message: 'Playlist updated!',
+                })
+            })
+            .catch(error => {
+                console.log("FAILURE: " + JSON.stringify(error));
+                return res.status(404).json({
+                    error,
+                    message: 'Playlist not updated!',
+                })
+            })
+    });
 }
 
 updatePlaylist = async (req, res) => {
@@ -295,5 +391,7 @@ module.exports = {
     getPlaylists,
     updatePlaylist,
     commentPlaylist,
-    getUsersPlaylists
+    getUsersPlaylists,
+    likePlaylist,
+    dislikePlaylist
 }

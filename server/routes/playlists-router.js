@@ -17,4 +17,6 @@ router.get('/playlists', auth.verify, PlaylistController.getPlaylists)
 router.put('/playlist/:id', auth.verify, PlaylistController.updatePlaylist)
 router.put('/playlist/comments/:id', PlaylistController.commentPlaylist)
 router.get('/playlist/user/:id', PlaylistController.getUsersPlaylists)
+router.put('/playlist/like/:id', PlaylistController.likePlaylist)
+router.put('/playlist/dislike/:id', PlaylistController.dislikePlaylist)
 module.exports = router

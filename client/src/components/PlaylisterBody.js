@@ -14,7 +14,7 @@ export default function PlaylisterBody() {
             <div id='playlister-body-statusbar'>
                 <div id='playlister-body-statusbar-left' style={{paddingRight: '8%'}}>
                     <HomeIcon style={{ width: '50px', height: '50px'}}/>
-                    <GroupsIcon style={{ width: '50px', height: '50px'}}/>
+                    <GroupsIcon style={{ width: '50px', height: '50px'}} onClick={store.loadPlaylists}/>
                     <PersonIcon style={{ width: '50px', height: '50px'}}/>
                 </div>
                 <TextField className='searchbar' label='Search'></TextField>

@@ -7,6 +7,7 @@ import MoveSong_Transaction from '../transactions/MoveSong_Transaction'
 import RemoveSong_Transaction from '../transactions/RemoveSong_Transaction'
 import UpdateSong_Transaction from '../transactions/UpdateSong_Transaction'
 import AuthContext from '../auth'
+import { Experimental_CssVarsProvider } from '@mui/material'
 /*
     This is our global data store. Note that it uses the Flux design pattern,
     which makes use of things like actions and reducers. 
@@ -357,12 +358,11 @@ function GlobalStoreContextProvider(props) {
     }
 
     // THIS FUNCTION PROCESSES CLOSING THE CURRENTLY LOADED LIST
-    store.closeCurrentList = function () {
+    store.closeCurrentEditingList = function () {
         storeReducer({
-            type: GlobalStoreActionType.CLOSE_CURRENT_LIST,
-            payload: {}
+            type: GlobalStoreActionType.SET_CURRENT_EDITING_LIST,
+            payload: null
         });
-        history.push('/')
         tps.clearAllTransactions();
     }
 
@@ -631,6 +631,51 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
+    store.likePlaylist = function(playlist, remove){
+    remove ? console.log("Removing Like") : console.log("Liking Playlist");
+        async function asyncLikePlaylist(playlist, email, remove) {
+            const response = await api.likePlaylistById(playlist._id, email, remove);
+            if(response.data.success){
+                console.log("SUCCESS")
+                if(remove){
+                    for(let i = 0; i < playlist.likes.length; i++)
+                        if(playlist.likes[i] == email){
+                            playlist.likes.splice(i, 1);
+                            break;
+                        }
+                }else{
+                    playlist.likes.push(email)
+                }
+                storeReducer({
+                    type: GlobalStoreActionType.SET_CURRENT_LIST,
+                    payload: store.currentList
+                });
+            }
+        }
+        asyncLikePlaylist(playlist,auth.user.email,remove)
+    }
+    store.dislikePlaylist = function(playlist, remove){
+        remove ? console.log("Removing Dislike") : console.log("Disliking Playlist");
+        async function asyncDislikePlaylist(playlist, email, remove) {
+            const response = await api.dislikePlaylistById(playlist._id, email, remove);
+            if(response.data.success){
+                if(remove){
+                    for(let i = 0; i < playlist.dislikes.length; i++)
+                        if(playlist.dislikes[i] == email){
+                            playlist.dislikes.splice(i, 1);
+                            break;
+                        }
+                }else{
+                    playlist.dislikes.push(email)
+                }
+                storeReducer({
+                    type: GlobalStoreActionType.SET_CURRENT_LIST,
+                    payload: store.currentList
+                });
+            }
+        }
+        asyncDislikePlaylist(playlist,auth.user.email,remove)
+    }
     // THIS FUNCTION MOVES A SONG IN THE CURRENT LIST FROM
     // start TO end AND ADJUSTS ALL OTHER ITEMS ACCORDINGLY
     store.moveSong = function(start, end) {

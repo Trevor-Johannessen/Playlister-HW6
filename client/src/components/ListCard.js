@@ -12,6 +12,10 @@ import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrow
 import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
+import ThumbUpIconOutlined from '@mui/icons-material/ThumbUpOutlined';
+import ThumbDownIconOutlined from '@mui/icons-material/ThumbDownOutlined';
+import AuthContext from '../auth'
+import ReportGmailerrorredIcon from '@mui/icons-material/ReportGmailerrorred';
 
 /*
     This is a card in our list of top 5 lists. It lets select
@@ -25,6 +29,7 @@ function ListCard(props) {
     const [opened, setOpened] = useState(false);
     const [text, setText] = useState("");
     const { playlist, selected } = props;
+    const { auth } = useContext(AuthContext);
 
     let reverseOpenState = () => {
         setOpened(!opened);
@@ -37,13 +42,34 @@ function ListCard(props) {
             setOpened(true)
             store.setCurrentEditingList(playlist)
         }
+        console.log(auth.user)
     }
 
     let closeCard = (event) => {
         event.stopPropagation();
         setOpened(false)
-        store.setCurrentEditingList(null)
+        store.closeCurrentEditingList();
     }
+
+    let likeList = (event, remove) => {
+        event.stopPropagation();
+        let hasDisliked = false;
+        for(let i = 0; i < playlist.dislikes.length; i++) // check if user has already disliked
+            if(playlist.dislikes[i] == auth.user.email)
+                hasDisliked = true;
+        if(!hasDisliked)
+            store.likePlaylist(playlist, remove)
+    }
+    let dislikeList = (event, remove) => {
+        event.stopPropagation();
+        let hasLiked = false;
+        for(let i = 0; i < playlist.likes.length; i++) // check if the user has already liked
+            if(playlist.likes[i] == auth.user.email)
+                hasLiked = true;
+        if(!hasLiked)
+            store.dislikePlaylist(playlist, remove);
+    }
+
     
     let publishedFeatures;
     let cardExpandIcon = (<span className='list-card-expand-icon'><KeyboardDoubleArrowDownIcon onClick={(event) => {openCard(event)}}/></span>);
@@ -70,16 +96,35 @@ function ListCard(props) {
 
     
     // if published
-    if(true)
+    if(playlist.published != ""){
+        let hasLiked = false;
+        let hasDisliked = false;
+
+        for(let i = 0; i < playlist.likes.length; i++)
+            if(playlist.likes[i] == auth.user.email)
+                hasLiked = true;
+        for(let i = 0; i < playlist.dislikes.length; i++)
+            if(playlist.dislikes[i] == auth.user.email)
+                hasDisliked = true;
+    
+        let likeButton = (<span className='list-card-ratings-like'><ThumbUpIconOutlined onClick={(event) => likeList(event, false)}/>{playlist.likes.length}</span>)
+        let dislikeButton = (<span className='list-card-ratings-dislike'><ThumbDownIconOutlined onClick={(event) => dislikeList(event, false)}/>{playlist.dislikes.length}</span>)
+            
+        if(hasLiked)
+            likeButton = (<span className='list-card-ratings-like'><ThumbUpIcon onClick={(event) => likeList(event, true)}/>{playlist.likes.length}</span>)
+        else if(hasDisliked)
+            dislikeButton = (<span className='list-card-ratings-dislike'><ThumbDownIcon onClick={(event) => dislikeList(event, true)}/>{playlist.dislikes.length}</span>)
+           
         publishedFeatures = 
         (
         <div>
-            <span className='list-card-listens'>Listens: <span style={{color: 'red'}}>1234567{playlist.listens}</span></span>
+            <span className='list-card-listens'>Listens: <span style={{color: 'red'}}>{playlist.listens}</span></span>
             <span className="list-card-published">Published: <span style={{color: 'green'}}>{playlist.createdAt}</span></span>
-            <span className='list-card-ratings-like'><ThumbUpIcon/>6969{playlist.likes}</span><span className='list-card-ratings-dislike'><ThumbDownIcon/>420{playlist.dislikes}</span>
+            {likeButton}
+            {dislikeButton}
         </div>
         )
-    
+    }
     let cardElement =
         <ListItem
             id={playlist._id}
