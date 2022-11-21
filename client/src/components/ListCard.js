@@ -30,15 +30,29 @@ function ListCard(props) {
         setOpened(!opened);
         opened ? console.log('opened') : console.log('closed');
     }
+
+    let openCard = (event) => {
+        event.stopPropagation();
+        if(store.currentEditingList == null){
+            setOpened(true)
+            store.setCurrentEditingList(playlist)
+        }
+    }
+
+    let closeCard = (event) => {
+        event.stopPropagation();
+        setOpened(false)
+        store.setCurrentEditingList(null)
+    }
     
     let publishedFeatures;
-    let cardExpandIcon = (<span className='list-card-expand-icon'><KeyboardDoubleArrowDownIcon onClick={reverseOpenState}/></span>);
-    let cardClass = 'list-card';
+    let cardExpandIcon = (<span className='list-card-expand-icon'><KeyboardDoubleArrowDownIcon onClick={(event) => {openCard(event)}}/></span>);
+    let cardClass = 'list-card'; // setOpened(true); 
     let songCards;
 
     if(opened){
         cardClass += '-opened'
-        cardExpandIcon = (<span className='list-card-expand-icon'><KeyboardDoubleArrowUpIcon onClick={reverseOpenState}/></span>)
+        cardExpandIcon = (<span className='list-card-expand-icon'><KeyboardDoubleArrowUpIcon onClick={(event) => {closeCard(event)}}/></span>)
         songCards = (
         <div className='list-card-selector'>
         {
