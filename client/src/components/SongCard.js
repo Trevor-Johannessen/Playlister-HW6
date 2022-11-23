@@ -28,6 +28,7 @@ function SongCard(props) {
 
     function handleDrop(event) {
         event.preventDefault();
+        console.log("Card Dropped")
         let targetIndex = index;
         let sourceIndex = Number(event.dataTransfer.getData("song"));
         setDraggedTo(false);
@@ -55,6 +56,10 @@ function SongCard(props) {
                 id='song-add-card'
                 draggable="false"
                 onClick={(event) => {event.stopPropagation(); store.addNewSong()}}
+                onDragStart={handleDragStart}
+                onDrop={handleDrop}
+                onDragEnter={handleDragEnter}
+                onDragLeave={handleDragLeave}
             >
                 +
             </div>)

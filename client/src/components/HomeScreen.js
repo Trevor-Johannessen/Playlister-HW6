@@ -21,7 +21,7 @@ const HomeScreen = () => {
     const [stupidInt, setStupid] = useState(0);
 
     useEffect(() => {
-        store.loadPlaylists();
+        store.loadLoggedInUsersPlaylists();
         //store.loadIdNamePairs();
     }, []);
 
