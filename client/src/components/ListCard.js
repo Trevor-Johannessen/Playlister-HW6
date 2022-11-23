@@ -106,7 +106,7 @@ function ListCard(props) {
             {dislikeButton}
         </div>
         )
-    }else if(opened){ // if playlist not published and card is opened
+    }else if(playlist == store.currentEditingList){ // if playlist not published and card is opened
         ownerEditingFeatures = (
             <div>
                 <div className='list-card-editing-button' onClick={(event) => {event.stopPropagation(); store.undo()}}>Undo</div>
@@ -118,7 +118,7 @@ function ListCard(props) {
         )
     }
 
-    if(opened){
+    if(playlist == store.currentEditingList){
         cardClass += '-opened'
         cardExpandIcon = (<span className='list-card-expand-icon'><KeyboardDoubleArrowUpIcon onClick={(event) => {event.stopPropagation(); closeCard()}}/></span>)
         songCards = (

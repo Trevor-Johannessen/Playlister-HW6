@@ -9,6 +9,7 @@ function SongCard(props) {
     const { song, index, dbClickFunc } = props;
 
     function handleDragStart(event) {
+        console.log("Picked up card");
         event.dataTransfer.setData("song", index);
     }
 
@@ -56,10 +57,6 @@ function SongCard(props) {
                 id='song-add-card'
                 draggable="false"
                 onClick={(event) => {event.stopPropagation(); store.addNewSong()}}
-                onDragStart={handleDragStart}
-                onDrop={handleDrop}
-                onDragEnter={handleDragEnter}
-                onDragLeave={handleDragLeave}
             >
                 +
             </div>)
@@ -86,6 +83,11 @@ function SongCard(props) {
             className='song-card-body'
             draggable="true"
             onDoubleClick={(event) => {event.stopPropagation(); handleEditSong() }}
+            onDragStart={handleDragStart}
+            onDrop={handleDrop}
+            onDragEnter={handleDragEnter}
+            onDragLeave={handleDragLeave}
+            onDragOver={handleDragOver}
         >
             {index + 1}. <a
                 id={'song-' + index + '-link'}
