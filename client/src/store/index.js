@@ -69,11 +69,8 @@ function GlobalStoreContextProvider(props) {
     });
     const history = useHistory();
 
-    console.log("inside useGlobalStore");
-
     // SINCE WE'VE WRAPPED THE STORE IN THE AUTH CONTEXT WE CAN ACCESS THE USER HERE
     const { auth } = useContext(AuthContext);
-    console.log("auth: " + auth);
 
     // HERE'S THE DATA STORE'S REDUCER, IT MUST
     // HANDLE EVERY TYPE OF STATE CHANGE
@@ -127,7 +124,7 @@ function GlobalStoreContextProvider(props) {
                     listIdMarkedForDeletion: null,
                     listMarkedForDeletion: null,
                     storedPlaylists: store.storedPlaylists,
-                    currentEditingList : store.currentEditingList,
+                    currentEditingList : payload,
                     searchCriteria: store.searchCriteria
                 })
             }
@@ -407,25 +404,49 @@ function GlobalStoreContextProvider(props) {
 
     // THIS FUNCTION CREATES A NEW LIST
     store.createNewList = async function () {
-        let newListName = "Untitled" + store.newListCounter;
-        const response = await api.createPlaylist(newListName, [], auth.user.email);
-        console.log("createNewList response: " + response);
-        if (response.status === 201) {
-            tps.clearAllTransactions();
-            let newList = response.data.playlist;
-            storeReducer({
-                type: GlobalStoreActionType.CREATE_NEW_LIST,
-                payload: newList
+        async function asyncCreateNewList(){
+            let newListName = "Untitled" + store.newListCounter;
+            console.log("PRINTING CREATELIST AUTH")
+            console.log(auth.user)
+            console.log(auth.user.username)
+            const response = await api.createPlaylist(newListName, [], auth.user.email, auth.user.username);
+            console.log("createNewList response: " + response.status);
+            if (response.status === 201) {
+                tps.clearAllTransactions();
+                let newList = response.data.playlist;
+                storeReducer({
+                    type: GlobalStoreActionType.CREATE_NEW_LIST,
+                    payload: newList
+                })
             }
-            );
-
-            // IF IT'S A VALID LIST THEN LET'S START EDITING IT
-            history.push("/playlist/" + newList._id);
+            else {
+                console.log("API FAILED TO CREATE A NEW LIST");
+            }
+            console.log(`editing list = ${store.currentEditingList}`)
         }
-        else {
-            console.log("API FAILED TO CREATE A NEW LIST");
-        }
+        asyncCreateNewList();
+        console.log(`editing list = ${store.currentEditingList}`)
     }
+
+
+    /*
+    store.updateCurrentList = function() {
+        async function asyncUpdateCurrentList() {
+            console.log(store.currentList)
+            const response = await api.updatePlaylistById(store.currentEditingList._id, store.currentEditingList);
+            if (response.data.success) {
+                storeReducer({
+                    type: GlobalStoreActionType.SET_CURRENT_EDITING_LIST,
+                    payload: store.currentEditingList
+                });
+            }
+        }
+        asyncUpdateCurrentList();
+    }
+    */
+
+
+
 
     // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
     store.loadIdNamePairs = function () {
@@ -846,7 +867,6 @@ function GlobalStoreContextProvider(props) {
     }
     store.updateCurrentList = function() {
         async function asyncUpdateCurrentList() {
-            console.log(store.currentList)
             const response = await api.updatePlaylistById(store.currentEditingList._id, store.currentEditingList);
             if (response.data.success) {
                 storeReducer({

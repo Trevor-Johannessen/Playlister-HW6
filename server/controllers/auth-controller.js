@@ -15,13 +15,13 @@ getLoggedIn = async (req, res) => {
 
         const loggedInUser = await User.findOne({ _id: userId });
         console.log("loggedInUser: " + loggedInUser);
-
         return res.status(200).json({
             loggedIn: true,
             user: {
                 firstName: loggedInUser.firstName,
                 lastName: loggedInUser.lastName,
-                email: loggedInUser.email
+                email: loggedInUser.email,
+                username: loggedInUser.username
             }
         })
     } catch (err) {
@@ -75,7 +75,8 @@ loginUser = async (req, res) => {
             user: {
                 firstName: existingUser.firstName,
                 lastName: existingUser.lastName,  
-                email: existingUser.email              
+                email: existingUser.email,
+                username: existingUser.username            
             }
         })
 
@@ -155,7 +156,8 @@ registerUser = async (req, res) => {
             user: {
                 firstName: savedUser.firstName,
                 lastName: savedUser.lastName,  
-                email: savedUser.email         
+                email: savedUser.email,
+                username: savedUser.username       
             }
         })
 

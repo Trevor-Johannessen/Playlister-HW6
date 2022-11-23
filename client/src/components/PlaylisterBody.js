@@ -1,5 +1,6 @@
 import { useState, useContext, useEffect } from 'react'
 import { GlobalStoreContext } from '../store'
+import AuthContext from '../auth'
 import HomeIcon from '@mui/icons-material/Home';
 import PersonIcon from '@mui/icons-material/Person';
 import GroupsIcon from '@mui/icons-material/Groups';
@@ -10,6 +11,7 @@ export default function PlaylisterBody() {
     const { store } = useContext(GlobalStoreContext);
     const [bottomBarText, setText] = useState("");
     const [inHome, setHome] = useState(true);
+    const { auth } = useContext(AuthContext);
 
     function detectEnter(event) {
         if (event.code === "Enter") {
@@ -19,6 +21,7 @@ export default function PlaylisterBody() {
     }
 
     function addNewList(){
+        // remember to change cursor to not text
         console.log("add new list")
         if(store.currentEditingList){
             // add new list here
@@ -27,6 +30,7 @@ export default function PlaylisterBody() {
             
             // set list as edit active
         }
+        store.createNewList();
     }
 
     let bottomBar = (<div id="playlister-body-bottom-bar">{bottomBarText}</div>);
