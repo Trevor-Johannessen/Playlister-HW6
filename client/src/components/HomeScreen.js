@@ -4,7 +4,8 @@ import ListCard from './ListCard.js'
 import MUIDeleteModal from './MUIDeleteModal'
 import PlaylisterBody from './PlaylisterBody.js'
 import Comments from './Comments'
-
+import MUIEditSongModal from './MUIEditSongModal'
+import MUIRemoveSongModal from './MUIRemoveSongModal'
 import AddIcon from '@mui/icons-material/Add';
 import Fab from '@mui/material/Fab'
 import List from '@mui/material/List';
@@ -48,6 +49,15 @@ const HomeScreen = () => {
             </List>;
     }
     
+    let modalJSX = "";
+    if (store.isEditSongModalOpen()) {
+        modalJSX = <MUIEditSongModal />;
+    }
+    else if (store.isRemoveSongModalOpen()) {
+        modalJSX = <MUIRemoveSongModal />;
+    }
+
+
     return (
         
         <div id="playlist-selector" style={{height: 'inherit'}}>
@@ -63,6 +73,7 @@ const HomeScreen = () => {
             </div>
             {playerOpen ? /* TODO: Add youtube player */ null : <Comments/>}
             <button onClick={() => store.loadUsersPlaylists('obama@gmail.com')}>Load Obamas Secret Playlists</button>
+            {modalJSX}
         </div>)
 }
 

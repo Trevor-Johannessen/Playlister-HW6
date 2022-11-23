@@ -18,6 +18,7 @@
 
 body {
   background-color: var(--swatch-foundation);
+  overflow: hidden;
 }
 
 #root {
@@ -191,11 +192,11 @@ body {
   background-color:#b3b3b3;
   left: 1%;
   top: 20%;
-  width: 40%;
+  width: 50%;
   height: 60%;
   display: flex;
   flex-direction: column;
-  overflow: scroll;
+  overflow-y: scroll;
   border-style: solid;
   border-color: black;
   border-width: 1px;
@@ -262,11 +263,29 @@ body {
   font-size:10pt;
 }
 
-.list-card-duplicate-button{
+.list-card-editing-buttons{
+  display: flex;
+  flex-direction: row;
   position: absolute;
   right: 10%;
   bottom: 3.5vh;
 }
+
+.list-card-editing-button{
+  font-size:11pt;
+  padding: 2px 10px 2px 10px;
+  display:inline;
+  height: 20px;
+  text-align:center;
+  background-color: rgb(177, 177, 177);
+  border-color: black;
+  border-radius: 10px;
+  border-width: 1px;
+  border-style: solid;
+  margin-right: 2px;
+
+}
+
 
 .list-card-published{
   font-size:8pt;
@@ -284,7 +303,7 @@ body {
 }
 
 .list-card-selector {
-  overflow: scroll;
+  overflow-y: scroll;
   background-color: darkblue;
   color: darkgoldenrod;
   width: 80%;
@@ -300,6 +319,27 @@ body {
 .song-card {
   color: inherit;
   text-decoration: inherit;
+}
+
+#song-add-card{
+  text-align: center;
+}
+
+.song-card-body{
+  display: flex;
+  flex-direction: row;
+  padding: 3px 0px 3px 0px
+}
+
+#delete-song-button{
+  position: absolute;
+  right: 10px;
+  background-color: tan;
+  border-color: white;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 5px;
+  color: black;
 }
 
 #comments{
@@ -338,7 +378,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  overflow: scroll;
+  overflow-y: scroll;
   height: 100%;
 }
 

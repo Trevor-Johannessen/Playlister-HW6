@@ -365,6 +365,13 @@ function GlobalStoreContextProvider(props) {
         });
         tps.clearAllTransactions();
     }
+    store.closeCurrentList = function () {
+        storeReducer({
+            type: GlobalStoreActionType.SET_CURRENT_LIST,
+            payload: null
+        });
+        tps.clearAllTransactions();
+    }
 
     // THIS FUNCTION CREATES A NEW LIST
     store.createNewList = async function () {
@@ -547,6 +554,7 @@ function GlobalStoreContextProvider(props) {
             
     }
     store.showRemoveSongModal = (songIndex, songToRemove) => {
+        console.log("Trying to show remove song modal")
         storeReducer({
             type: GlobalStoreActionType.REMOVE_SONG,
             payload: {currentSongIndex: songIndex, currentSong: songToRemove}
@@ -615,7 +623,7 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.getPlaylistSize = function() {
-        return store.currentList.songs.length;
+        return store.currentEditingList.songs.length;
     }
     store.addNewSong = function() {
         let index = this.getPlaylistSize();
@@ -624,7 +632,7 @@ function GlobalStoreContextProvider(props) {
     // THIS FUNCTION CREATES A NEW SONG IN THE CURRENT LIST
     // USING THE PROVIDED DATA AND PUTS THIS SONG AT INDEX
     store.createSong = function(index, song) {
-        let list = store.currentList;      
+        let list = store.currentEditingList;      
         list.songs.splice(index, 0, song);
         // NOW MAKE IT OFFICIAL
         store.updateCurrentList();
@@ -695,6 +703,16 @@ function GlobalStoreContextProvider(props) {
         }
         asyncDislikePlaylist(playlist,auth.user.email,remove)
     }
+
+    store.publishList = function(){
+        console.log("Recieved publish list")
+        let list = store.currentEditingList;      
+        list.published = new Date().toLocaleString()
+        // NOW MAKE IT OFFICIAL
+        store.updateCurrentList();
+    }
+
+
     // THIS FUNCTION MOVES A SONG IN THE CURRENT LIST FROM
     // start TO end AND ADJUSTS ALL OTHER ITEMS ACCORDINGLY
     store.moveSong = function(start, end) {
@@ -722,7 +740,7 @@ function GlobalStoreContextProvider(props) {
     // THIS FUNCTION REMOVES THE SONG AT THE index LOCATION
     // FROM THE CURRENT LIST
     store.removeSong = function(index) {
-        let list = store.currentList;      
+        let list = store.currentEditingList;      
         list.songs.splice(index, 1); 
 
         // NOW MAKE IT OFFICIAL
@@ -762,7 +780,7 @@ function GlobalStoreContextProvider(props) {
     // THIS FUNCTION ADDS A RemoveSong_Transaction TO THE TRANSACTION STACK
     store.addRemoveSongTransaction = () => {
         let index = store.currentSongIndex;
-        let song = store.currentList.songs[index];
+        let song = store.currentEditingList.songs[index];
         let transaction = new RemoveSong_Transaction(store, index, song);
         tps.addTransaction(transaction);
     }
@@ -779,11 +797,11 @@ function GlobalStoreContextProvider(props) {
     store.updateCurrentList = function() {
         async function asyncUpdateCurrentList() {
             console.log(store.currentList)
-            const response = await api.updatePlaylistById(store.currentList._id, store.currentList);
+            const response = await api.updatePlaylistById(store.currentEditingList._id, store.currentEditingList);
             if (response.data.success) {
                 storeReducer({
-                    type: GlobalStoreActionType.SET_CURRENT_LIST,
-                    payload: store.currentList
+                    type: GlobalStoreActionType.SET_CURRENT_EDITING_LIST,
+                    payload: store.currentEditingList
                 });
             }
         }

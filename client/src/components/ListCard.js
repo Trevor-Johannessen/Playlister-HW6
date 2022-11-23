@@ -36,8 +36,7 @@ function ListCard(props) {
         opened ? console.log('opened') : console.log('closed');
     }
 
-    let openCard = (event) => {
-        event.stopPropagation();
+    let openCard = () => {
         if(store.currentEditingList == null){
             setOpened(true)
             store.setCurrentEditingList(playlist)
@@ -45,8 +44,7 @@ function ListCard(props) {
         console.log(auth.user)
     }
 
-    let closeCard = (event) => {
-        event.stopPropagation();
+    let closeCard = () => {
         setOpened(false)
         store.closeCurrentEditingList();
     }
@@ -72,29 +70,13 @@ function ListCard(props) {
 
     
     let publishedFeatures;
-    let cardExpandIcon = (<span className='list-card-expand-icon'><KeyboardDoubleArrowDownIcon onClick={(event) => {openCard(event)}}/></span>);
+    let cardExpandIcon = (<span className='list-card-expand-icon'><KeyboardDoubleArrowDownIcon onClick={(event) => {event.stopPropagation(); openCard()}}/></span>);
     let cardClass = 'list-card'; // setOpened(true); 
     let songCards;
 
-    if(opened){
-        cardClass += '-opened'
-        cardExpandIcon = (<span className='list-card-expand-icon'><KeyboardDoubleArrowUpIcon onClick={(event) => {closeCard(event)}}/></span>)
-        songCards = (
-        <div className='list-card-selector'>
-        {
-        playlist.songs.map((song, index) => (
-            <SongCard
-                id={'playlist-song-' + (index)}
-                key={'playlist-song-' + (index)}
-                index={index}
-                song={song}
-            />
-        ))
-        }
-        </div>)
-    }
-
     
+
+    let ownerEditingFeatures = (<div className='list-card-editing-button'>Duplicate</div>);
     // if published
     if(playlist.published != ""){
         let hasLiked = false;
@@ -124,7 +106,49 @@ function ListCard(props) {
             {dislikeButton}
         </div>
         )
+    }else if(opened){ // if playlist not published and card is opened
+        ownerEditingFeatures = (
+            <div>
+                <div className='list-card-editing-button' onClick={(event) => {event.stopPropagation(); store.undo()}}>Undo</div>
+                <div className='list-card-editing-button' onClick={(event) => {event.stopPropagation(); store.redo()}}>Redo</div>
+                <div className='list-card-editing-button'>Delete</div>{/* delete list button */}
+                <div className='list-card-editing-button' onClick={(event) => {event.stopPropagation(); console.log("Sending publish list"); store.publishList(); closeCard();}}>Publish</div>
+                <div className='list-card-editing-button'>Duplicate</div>
+            </div>
+        )
     }
+
+    if(opened){
+        cardClass += '-opened'
+        cardExpandIcon = (<span className='list-card-expand-icon'><KeyboardDoubleArrowUpIcon onClick={(event) => {event.stopPropagation(); closeCard()}}/></span>)
+        songCards = (
+        <div className='list-card-selector'>
+        {
+        playlist.songs.map((song, index) => (
+            <SongCard
+                id={'playlist-song-' + (index)}
+                key={'playlist-song-' + (index)}
+                index={index}
+                song={song}
+            />   
+        ))
+        }
+        {
+            playlist.published == "" ? 
+            <SongCard
+                id={'add-song-song-card'}
+                key={'add-song-song-card'}
+                index={playlist.songs.length}
+                song={"ADD BUTTON"}
+            /> : <div/> 
+        }
+        </div>)
+    }
+
+
+
+
+
     let cardElement =
         <ListItem
             id={playlist._id}
@@ -141,7 +165,7 @@ function ListCard(props) {
                 <span className="list-card-owner">By: <Link to=''>{playlist.ownerEmail}</Link></span>
                 {songCards}
                 {publishedFeatures}
-                <button className="list-card-duplicate-button">Duplicate</button>
+                <span className='list-card-editing-buttons'>{ownerEditingFeatures}</span>
                 {cardExpandIcon}
             </div>
         </ListItem>

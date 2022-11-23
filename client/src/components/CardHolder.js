@@ -6,7 +6,7 @@ function CardHolder(){
 
     if (store) {
         listCard = 
-            <List sx={{ width: '40%', left: '5%', bgcolor: 'background.paper' }}>
+            <List sx={{ width: '60%', left: '5%', bgcolor: 'background.paper' }}>
             {
                 store.idNamePairs.map((pair) => (
                     <ListCard

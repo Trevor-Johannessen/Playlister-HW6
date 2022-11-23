@@ -32,6 +32,7 @@ export default function AppBanner() {
         handleMenuClose();
         auth.logoutUser();
         store.closeCurrentList();
+        store.closeCurrentEditingList();
     }
 
     const menuId = 'primary-search-account-menu';

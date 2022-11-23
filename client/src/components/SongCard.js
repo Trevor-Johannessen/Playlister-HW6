@@ -1,10 +1,12 @@
 import React, { useContext, useState } from 'react'
 import { GlobalStoreContext } from '../store'
+import AuthContext from '../auth'
 
 function SongCard(props) {
     const { store } = useContext(GlobalStoreContext);
+    const { auth } = useContext(AuthContext);
     const [ draggedTo, setDraggedTo ] = useState(0);
-    const { song, index } = props;
+    const { song, index, dbClickFunc } = props;
 
     function handleDragStart(event) {
         event.dataTransfer.setData("song", index);
@@ -44,11 +46,41 @@ function SongCard(props) {
     }
 
     let cardClass = "song-card";
+    console.log(`Song = `)
+    console.log(song)
+    if(song === "ADD BUTTON"){
+        return(
+            <div
+                key='song-add-card'
+                id='song-add-card'
+                draggable="false"
+                onClick={(event) => {event.stopPropagation(); store.addNewSong()}}
+            >
+                +
+            </div>)
+    }
+
+    let handleEditSong = () => {
+        if(store.currentEditingList.published == "")
+            store.showEditSongModal(index, store.currentEditingList.songs[index])
+    }
+    let deleteButton = ""
+    if(store.currentEditingList && store.currentEditingList.published == "")
+        deleteButton = 
+            (
+                <div id="delete-song-button"
+                    className=''
+                    onClick={(event) => {event.stopPropagation();  store.showRemoveSongModal(index, store.currentEditingList.songs[index])}}
+                    >X</div>
+            )
+
     return (
         <div
             key={index}
             id={'song-' + index + '-card'}
+            className='song-card-body'
             draggable="true"
+            onDoubleClick={(event) => {event.stopPropagation(); handleEditSong() }}
         >
             {index + 1}. <a
                 id={'song-' + index + '-link'}
@@ -58,6 +90,8 @@ function SongCard(props) {
                 rel="noreferrer noopener">
                 {song.title} by {song.artist}
             </a>
+            
+            {deleteButton}
         </div>
     );
 }
