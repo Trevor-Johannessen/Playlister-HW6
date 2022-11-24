@@ -68,7 +68,7 @@ function ListCard(props) {
             store.dislikePlaylist(playlist, remove);
     }
 
-    
+
     let publishedFeatures;
     let cardExpandIcon = (<span className='list-card-expand-icon'><KeyboardDoubleArrowDownIcon onClick={(event) => {event.stopPropagation(); openCard()}}/></span>);
     let cardClass = 'list-card'; // setOpened(true); 
@@ -106,7 +106,7 @@ function ListCard(props) {
             {dislikeButton}
         </div>
         )
-    }else if(playlist == store.currentEditingList){ // if playlist not published and card is opened
+    }else if(store.currentEditingList != null && playlist._id == store.currentEditingList._id){ // if playlist not published and card is opened
         ownerEditingFeatures = (
             <div>
                 <div className='list-card-editing-button' onClick={(event) => {event.stopPropagation(); store.undo()}}>Undo</div>
@@ -118,7 +118,7 @@ function ListCard(props) {
         )
     }
 
-    if(playlist == store.currentEditingList){
+    if(store.currentEditingList != null && playlist._id == store.currentEditingList._id){
         cardClass += '-opened'
         cardExpandIcon = (<span className='list-card-expand-icon'><KeyboardDoubleArrowUpIcon onClick={(event) => {event.stopPropagation(); closeCard()}}/></span>)
         songCards = (

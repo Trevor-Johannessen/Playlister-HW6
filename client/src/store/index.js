@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import jsTPS from '../common/jsTPS'
-import api from './store-request-api'
+import api, { getUsersPlaylists } from './store-request-api'
 import CreateSong_Transaction from '../transactions/CreateSong_Transaction'
 import MoveSong_Transaction from '../transactions/MoveSong_Transaction'
 import RemoveSong_Transaction from '../transactions/RemoveSong_Transaction'
@@ -173,7 +173,7 @@ function GlobalStoreContextProvider(props) {
                     listIdMarkedForDeletion: null,
                     listMarkedForDeletion: null,
                     storedPlaylists: payload.playlist,
-                    currentEditingList : null,
+                    currentEditingList : payload.currentEditingList != null ? payload.currentEditingList : null,
                     searchCriteria: payload.criteria != null ? payload.criteria : store.searchCriteria 
                 });
             }
@@ -414,10 +414,7 @@ function GlobalStoreContextProvider(props) {
             if (response.status === 201) {
                 tps.clearAllTransactions();
                 let newList = response.data.playlist;
-                storeReducer({
-                    type: GlobalStoreActionType.CREATE_NEW_LIST,
-                    payload: newList
-                })
+                store.loadLoggedInUsersPlaylists(newList);
             }
             else {
                 console.log("API FAILED TO CREATE A NEW LIST");
@@ -527,7 +524,7 @@ function GlobalStoreContextProvider(props) {
         asyncLoadPlaylists();
     }
 
-    store.loadLoggedInUsersPlaylists = function () {
+    store.loadLoggedInUsersPlaylists = function (inputCurrentEditingList) {
         async function asyncLoadLoggedInPlaylists(){
             const response = await api.getLoggedInUsersPlaylists(auth.user.email);
             if(response.data.success){
@@ -536,7 +533,7 @@ function GlobalStoreContextProvider(props) {
                 console.log(playlistArray)
                 storeReducer({
                     type: GlobalStoreActionType.LOAD_PLAYLISTS,
-                    payload: {playlist: playlistArray, criteria : null}
+                    payload: {playlist: playlistArray, criteria : null, currentEditingList: inputCurrentEditingList}
                 });
             }else{
                 console.log("API FAILED TO GET PLAYLISTS")
