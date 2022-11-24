@@ -111,7 +111,7 @@ function ListCard(props) {
             <div>
                 <div className='list-card-editing-button' onClick={(event) => {event.stopPropagation(); store.undo()}}>Undo</div>
                 <div className='list-card-editing-button' onClick={(event) => {event.stopPropagation(); store.redo()}}>Redo</div>
-                <div className='list-card-editing-button'>Delete</div>{/* delete list button */}
+                <div className='list-card-editing-button' onClick={(event) => {event.stopPropagation(); store.markListForDeletion(playlist._id)}}>Delete</div>
                 <div className='list-card-editing-button' onClick={(event) => {event.stopPropagation(); console.log("Sending publish list"); store.publishList(); closeCard();}}>Publish</div>
                 <div className='list-card-editing-button'>Duplicate</div>
             </div>

@@ -406,9 +406,6 @@ function GlobalStoreContextProvider(props) {
     store.createNewList = async function () {
         async function asyncCreateNewList(){
             let newListName = "Untitled" + store.newListCounter;
-            console.log("PRINTING CREATELIST AUTH")
-            console.log(auth.user)
-            console.log(auth.user.username)
             const response = await api.createPlaylist(newListName, [], auth.user.email, auth.user.username);
             console.log("createNewList response: " + response.status);
             if (response.status === 201) {
@@ -425,22 +422,6 @@ function GlobalStoreContextProvider(props) {
         console.log(`editing list = ${store.currentEditingList}`)
     }
 
-
-    /*
-    store.updateCurrentList = function() {
-        async function asyncUpdateCurrentList() {
-            console.log(store.currentList)
-            const response = await api.updatePlaylistById(store.currentEditingList._id, store.currentEditingList);
-            if (response.data.success) {
-                storeReducer({
-                    type: GlobalStoreActionType.SET_CURRENT_EDITING_LIST,
-                    payload: store.currentEditingList
-                });
-            }
-        }
-        asyncUpdateCurrentList();
-    }
-    */
 
 
 
@@ -566,6 +547,7 @@ function GlobalStoreContextProvider(props) {
     // FUNCTIONS ARE markListForDeletion, deleteList, deleteMarkedList,
     // showDeleteListModal, and hideDeleteListModal
     store.markListForDeletion = function (id) {
+        console.log('marking list for deletion')
         async function getListToDelete(id) {
             let response = await api.getPlaylistById(id);
             if (response.data.success) {
@@ -592,8 +574,7 @@ function GlobalStoreContextProvider(props) {
             let response = await api.deletePlaylistById(id);
             console.log(`RESPONSE = ${response.data.success}`)
             if (response.data.success) {
-                store.loadIdNamePairs();
-                history.push("/");
+                store.loadLoggedInUsersPlaylists();
             }
         }
         processDelete(id);
@@ -628,6 +609,8 @@ function GlobalStoreContextProvider(props) {
             payload: {currentSongIndex: songIndex, currentSong: songToRemove}
         });        
     }
+
+
 
     store.logoutUser = () => {
         storeReducer({

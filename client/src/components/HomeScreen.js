@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState} from 'react'
 import { GlobalStoreContext } from '../store'
 import ListCard from './ListCard.js'
-import MUIDeleteModal from './MUIDeleteModal'
 import PlaylisterBody from './PlaylisterBody.js'
 import Comments from './Comments'
 import MUIEditSongModal from './MUIEditSongModal'
 import MUIRemoveSongModal from './MUIRemoveSongModal'
+import MUIDeleteModal from './MUIDeleteModal'
 import AddIcon from '@mui/icons-material/Add';
 import Fab from '@mui/material/Fab'
 import List from '@mui/material/List';
@@ -56,6 +56,9 @@ const HomeScreen = () => {
     else if (store.isRemoveSongModalOpen()) {
         modalJSX = <MUIRemoveSongModal />;
     }
+    else if(store.isDeleteListModalOpen()){
+        modalJSX = <MUIDeleteModal />
+    }
 
 
     return (
@@ -72,6 +75,7 @@ const HomeScreen = () => {
                 <div id='comments-button' className='player-button' style={commentButtonColor} onClick={swapPlayerView}>Comments</div>
             </div>
             {playerOpen ? /* TODO: Add youtube player */ null : <Comments/>}
+            
             <button onClick={() => store.loadUsersPlaylists('obama@gmail.com')}>Load Obamas Secret Playlists</button>
             {modalJSX}
         </div>)
