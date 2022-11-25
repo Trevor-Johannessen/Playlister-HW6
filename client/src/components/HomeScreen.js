@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState} from 'react'
-import { GlobalStoreContext } from '../store'
+import { GlobalStoreContext, SortingOption } from '../store'
 import ListCard from './ListCard.js'
 import PlaylisterBody from './PlaylisterBody.js'
 import Comments from './Comments'
@@ -36,10 +36,28 @@ const HomeScreen = () => {
 
     let listCard = "";
     if (store) {
+        let playlists = store.storedPlaylists;
+        switch(store.sortMethod){
+            case SortingOption.NAME:
+                playlists.sort((a, b) => {return a.name.localeCompare(b.name)})
+                break;
+            case SortingOption.LIKES:
+                playlists.sort((a, b) => {return a.likes.length < b.likes.length});
+                break;
+            case SortingOption.DISLIKES:
+                playlists.sort((a, b) => {return a.dislikes.length < b.dislikes.length});
+                break;
+            case SortingOption.LISTENS:
+                playlists.sort((a, b) => {return a.listens < b.listens});
+                break;
+            case SortingOption.PUBLISH_DATE:
+                playlists.sort((a, b) => {return new Date(b.published) - new Date(a.published)});
+                break;
+        }
         listCard = 
             <List sx={{ width: '100%', height: '100%'}}>
             {
-                store.storedPlaylists.map((pair) => (
+                playlists.map((pair) => (
                     <ListCard
                         key={pair._id}
                         playlist={pair}

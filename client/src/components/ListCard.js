@@ -95,9 +95,9 @@ function ListCard(props) {
             className='list-card-title-editing'
             onKeyPress={handleTextUpdate}
             onClick={(event) => event.stopPropagation()}
-        >
-            {playlist.name}
-        </TextField>)
+            defaultValue={playlist.name}
+            autoFocus
+        />)
     }else{
         // SET TITLE TO REGULAR TEXT
         title = <span className='list-card-title'>{playlist.name}</span>;

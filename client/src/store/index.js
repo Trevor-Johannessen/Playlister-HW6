@@ -50,12 +50,13 @@ const CurrentModal = {
     REMOVE_SONG : "REMOVE_SONG"
 }
 
-const SortingOption = {
+export const SortingOption = {
     NONE : "NONE",
     NAME : "NAME",
     LISTENS : "LISTENS",
     LIKES : "LIKES",
-    DISLIKES : "DISLIKES"
+    DISLIKES : "DISLIKES",
+    PUBLISH_DATE : "PUBLISH_DATE"
 }
 
 // WITH THIS WE'RE MAKING OUR GLOBAL DATA STORE
@@ -447,12 +448,13 @@ function GlobalStoreContextProvider(props) {
     // THIS FUNCTION CREATES A NEW LIST
     store.createNewList = async function () {
         async function asyncCreateNewList(){
-            let newListName = "Untitled" + store.newListCounter; // TODO: replace this with users counter
+            let newListName = "Untitled-" + auth.user.playlists.length; // TODO: replace this with users counter
             const response = await api.createPlaylist(newListName, [], auth.user.email, auth.user.username);
             console.log("createNewList response: " + response.status);
             if (response.status === 201) {
                 tps.clearAllTransactions();
                 let newList = response.data.playlist;
+                auth.user.playlists.push("Placeholder")
                 store.loadLoggedInUsersPlaylists(newList);
             }
             else {

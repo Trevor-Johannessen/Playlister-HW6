@@ -36,13 +36,6 @@ export default function PlaylisterBody() {
     function addNewList(){
         // remember to change cursor to not text
         console.log("add new list")
-        if(store.currentEditingList){
-            // add new list here
-            console.log("there is a list open")
-            // create new list
-            
-            // set list as edit active
-        }
         store.createNewList();
     }
 
