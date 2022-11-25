@@ -426,6 +426,18 @@ function GlobalStoreContextProvider(props) {
     store.duplicateList = async function(playlist){
         async function asyncDuplicateList(playlist){
             let newListName = playlist.name // TODO: check if duplicated list name is already taken here
+
+            // MAKE SURE DUPLICATED LIST DOESNT CAUSE A NAME CLASH
+            const usersPlaylists = (await api.getLoggedInUsersPlaylists(auth.user.email)).data.data;
+            const playlistNames = usersPlaylists.reduce((prev, curr) => {return [curr.name, ...prev]}, [])
+            let attempt = 0;
+            while(playlistNames.indexOf(newListName) != -1){
+                    console.log(`Playlist name ${playlist.name} already taken. Trying ${playlist.name}-${attempt}`);
+                    attempt++;            
+                    newListName = `${playlist.name}-${attempt}`
+            }
+            console.log(`Playlist name found  : ${newListName}`);
+            
             const response = await api.createPlaylist(newListName, playlist.songs, auth.user.email, auth.user.username);
             console.log("createNewList response: " + response.status);
             if (response.status === 201) {
@@ -873,6 +885,38 @@ function GlobalStoreContextProvider(props) {
             }
         }
         asyncUpdateCurrentList();
+    }
+
+    store.renamePlaylist = function(newList){
+        async function asyncRenamePlaylist(newList){
+            const playlistResponse = await api.getLoggedInUsersPlaylists(auth.user.email);
+            const usersPlaylists = playlistResponse.data.data
+            for (let i=0; i < usersPlaylists.length; i++){
+                if(usersPlaylists[i].name == newList.name){
+                    console.log(`Playlist name ${newList.name} already taken.\nName not changed.`);
+                    return false;
+                }
+            }
+            const response = await api.updatePlaylistById(newList._id, newList);
+            if(response.data.success){
+                // Update playlist in the store
+                let playlists = store.storedPlaylists;
+                for (let i=0; i < playlists.length; i++){
+                    if(playlists[i]._id == newList._id)
+                        playlists.splice(i, 1, newList)
+                }
+                storeReducer({
+                    type: GlobalStoreActionType.LOAD_PLAYLISTS,
+                    payload: {playlist: playlists, criteria : null, currentEditingList: null}
+                });
+                console.log("Playlist successfully renamed.");
+                return true;
+            }else{
+                console.log("Playlist not renamed.");
+                return false;
+            }
+        }
+        return asyncRenamePlaylist(newList);
     }
     store.undo = function () {
         tps.undoTransaction();

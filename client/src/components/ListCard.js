@@ -27,7 +27,7 @@ import ReportGmailerrorredIcon from '@mui/icons-material/ReportGmailerrorred';
 function ListCard(props) {
     const { store } = useContext(GlobalStoreContext);
     const [opened, setOpened] = useState(false);
-    const [text, setText] = useState("");
+    const [editingTitle, setEdit] = useState(false);
     const { playlist, selected } = props;
     const { auth } = useContext(AuthContext);
 
@@ -67,14 +67,41 @@ function ListCard(props) {
         if(!hasLiked)
             store.dislikePlaylist(playlist, remove);
     }
-
+    let handleTextUpdate = async (event) => {
+        if (event.code === "Enter") {
+            let oldname = playlist.name
+            playlist.name = event.target.value;
+            let response = await store.renamePlaylist(playlist).then((response => {
+                return response;
+            }))
+            if(!response){ // if update fails, change playlist name back.
+                console.log(`Setting name back to ${oldname}`);
+                playlist.name = oldname;
+            }
+            setEdit(false) // disable text box;
+        }
+    }
 
     let publishedFeatures;
     let cardExpandIcon = (<span className='list-card-expand-icon'><KeyboardDoubleArrowDownIcon onClick={(event) => {event.stopPropagation(); openCard()}}/></span>);
     let cardClass = 'list-card'; // setOpened(true); 
     let songCards;
+    let title = "";
 
-    
+    if(editingTitle){
+        // SET TITLE TO TEXTBOX
+        title = 
+        (<TextField
+            className='list-card-title-editing'
+            onKeyPress={handleTextUpdate}
+            onClick={(event) => event.stopPropagation()}
+        >
+            {playlist.name}
+        </TextField>)
+    }else{
+        // SET TITLE TO REGULAR TEXT
+        title = <span className='list-card-title'>{playlist.name}</span>;
+    }
 
     let ownerEditingFeatures = (<div className='list-card-editing-button' onClick={(event) => {event.stopPropagation(); store.duplicateList(playlist);}}>Duplicate</div>);
     // if published
@@ -101,7 +128,7 @@ function ListCard(props) {
         (
         <div>
             <span className='list-card-listens'>Listens: <span style={{color: 'red'}}>{playlist.listens}</span></span>
-            <span className="list-card-published">Published: <span style={{color: 'green'}}>{playlist.createdAt}</span></span>
+            <span className="list-card-published">Published: <span style={{color: 'green'}}>{playlist.published}</span></span>
             {likeButton}
             {dislikeButton}
         </div>
@@ -158,10 +185,15 @@ function ListCard(props) {
             onClick={(event) => {
                 store.setCurrentList(playlist)
             }}
+            onDoubleClick={(event) => {
+                event.stopPropagation();
+                if(!editingTitle && playlist.published == "")
+                    setEdit(true);
+            }}
         >
             <div className={cardClass}>
                 {/* TODO: ADD DELETE BUTTON WHEN USER OWNS PLAYLIST */}
-                <span className='list-card-title'>{playlist.name}</span>
+                {title}
                 <span className="list-card-owner">By: <Link to=''>{playlist.ownerEmail}</Link></span>
                 {songCards}
                 {publishedFeatures}
