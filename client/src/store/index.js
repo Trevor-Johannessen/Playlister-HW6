@@ -405,7 +405,7 @@ function GlobalStoreContextProvider(props) {
     // THIS FUNCTION CREATES A NEW LIST
     store.createNewList = async function () {
         async function asyncCreateNewList(){
-            let newListName = "Untitled" + store.newListCounter;
+            let newListName = "Untitled" + store.newListCounter; // TODO: replace this with users counter
             const response = await api.createPlaylist(newListName, [], auth.user.email, auth.user.username);
             console.log("createNewList response: " + response.status);
             if (response.status === 201) {
@@ -423,6 +423,23 @@ function GlobalStoreContextProvider(props) {
     }
 
 
+    store.duplicateList = async function(playlist){
+        async function asyncDuplicateList(playlist){
+            let newListName = playlist.name // TODO: check if duplicated list name is already taken here
+            const response = await api.createPlaylist(newListName, playlist.songs, auth.user.email, auth.user.username);
+            console.log("createNewList response: " + response.status);
+            if (response.status === 201) {
+                if(store.searchCriteria == "")
+                    store.loadLoggedInUsersPlaylists();
+                else
+                    store.loadPlaylists("", "");
+            }
+            else {
+                console.log("API FAILED TO CREATE A NEW LIST");
+            }
+        }
+        asyncDuplicateList(playlist);
+    }
 
 
 
@@ -514,7 +531,7 @@ function GlobalStoreContextProvider(props) {
                 console.log(playlistArray)
                 storeReducer({
                     type: GlobalStoreActionType.LOAD_PLAYLISTS,
-                    payload: {playlist: playlistArray, criteria : null, currentEditingList: inputCurrentEditingList}
+                    payload: {playlist: playlistArray, criteria : "", currentEditingList: inputCurrentEditingList}
                 });
             }else{
                 console.log("API FAILED TO GET PLAYLISTS")

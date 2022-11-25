@@ -76,7 +76,7 @@ function ListCard(props) {
 
     
 
-    let ownerEditingFeatures = (<div className='list-card-editing-button'>Duplicate</div>);
+    let ownerEditingFeatures = (<div className='list-card-editing-button' onClick={(event) => {event.stopPropagation(); store.duplicateList(playlist);}}>Duplicate</div>);
     // if published
     if(playlist.published != ""){
         let hasLiked = false;
@@ -112,8 +112,8 @@ function ListCard(props) {
                 <div className='list-card-editing-button' onClick={(event) => {event.stopPropagation(); store.undo()}}>Undo</div>
                 <div className='list-card-editing-button' onClick={(event) => {event.stopPropagation(); store.redo()}}>Redo</div>
                 <div className='list-card-editing-button' onClick={(event) => {event.stopPropagation(); store.markListForDeletion(playlist._id)}}>Delete</div>
-                <div className='list-card-editing-button' onClick={(event) => {event.stopPropagation(); console.log("Sending publish list"); store.publishList(); closeCard();}}>Publish</div>
-                <div className='list-card-editing-button'>Duplicate</div>
+                <div className='list-card-editing-button' onClick={(event) => {event.stopPropagation(); store.publishList(); closeCard();}}>Publish</div>
+                <div className='list-card-editing-button' onClick={(event) => {event.stopPropagation(); console.log("Trying to duplicate"); store.duplicateList(playlist);}}>Duplicate</div>
             </div>
         )
     }

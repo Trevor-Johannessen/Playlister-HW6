@@ -15,7 +15,7 @@ export default function PlaylisterBody() {
 
     function detectEnter(event) {
         if (event.code === "Enter") {
-            store.loadPlaylists(event.target.value);
+            store.loadPlaylists(event.target.value, "");
             setText(`${event.target.value} Lists`)
         }
     }
