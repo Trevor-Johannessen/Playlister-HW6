@@ -56,7 +56,9 @@ export const SortingOption = {
     LISTENS : "LISTENS",
     LIKES : "LIKES",
     DISLIKES : "DISLIKES",
-    PUBLISH_DATE : "PUBLISH_DATE"
+    PUBLISH_DATE : "PUBLISH_DATE",
+    LAST_EDIT_DATE : "LAST_EDIT_DATE",
+    CREATION_DATE : "CREATION_DATE"
 }
 
 // WITH THIS WE'RE MAKING OUR GLOBAL DATA STORE
@@ -448,7 +450,7 @@ function GlobalStoreContextProvider(props) {
     // THIS FUNCTION CREATES A NEW LIST
     store.createNewList = async function () {
         async function asyncCreateNewList(){
-            let newListName = "Untitled-" + auth.user.playlists.length; // TODO: replace this with users counter
+            let newListName = "Untitled-" + auth.user.playlists.length; 
             const response = await api.createPlaylist(newListName, [], auth.user.email, auth.user.username);
             console.log("createNewList response: " + response.status);
             if (response.status === 201) {
@@ -456,6 +458,7 @@ function GlobalStoreContextProvider(props) {
                 let newList = response.data.playlist;
                 auth.user.playlists.push("Placeholder")
                 store.loadLoggedInUsersPlaylists(newList);
+                
             }
             else {
                 console.log("API FAILED TO CREATE A NEW LIST");
@@ -521,17 +524,23 @@ function GlobalStoreContextProvider(props) {
     }
 
 
-    store.loadPlaylists = function (searchString, criteria) {
+    store.loadPlaylists = function (searchString, criteria="", exactMatch=false) {
         console.log(`Searching ${store.searchCriteria}`);
         console.log(`Search String = ${searchString}`)
         async function asyncLoadPlaylists() {
             const response = await api.getPlaylists();
             if (response.data.success) {
                 let playlistArray = response.data.data;
-                if(store.searchCriteria=="ByName" && searchString != "")
+                let searchType = criteria != "" ? criteria : store.searchCriteria
+                if(searchType=="ByName" && searchString != "")
                     playlistArray = playlistArray.filter((item) => item.name.toLowerCase().includes(searchString.toLowerCase()));
-                if(store.searchCriteria=="ByUser" && searchString != "")
-                    playlistArray = playlistArray.filter((item) => item.ownerUsername.toLowerCase().includes(searchString.toLowerCase()));
+                if(searchType=="ByUser" && searchString != "")
+                    playlistArray = playlistArray.filter((item) => {
+                                                            if(exactMatch){
+                                                                return item.ownerUsername.toLowerCase() == searchString.toLowerCase()
+                                                            }else{
+                                                                return item.ownerUsername.toLowerCase().includes(searchString.toLowerCase())
+                                                            }});
                 console.log('playlistArray = ')
                 console.log(playlistArray)
                 storeReducer({
@@ -958,10 +967,12 @@ function GlobalStoreContextProvider(props) {
                     if(playlists[i]._id == newList._id)
                         playlists.splice(i, 1, newList)
                 }
+                /*
                 storeReducer({
                     type: GlobalStoreActionType.LOAD_PLAYLISTS,
                     payload: {playlist: playlists, criteria : null, currentEditingList: null}
                 });
+                */
                 console.log("Playlist successfully renamed.");
                 return true;
             }else{

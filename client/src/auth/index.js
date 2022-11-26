@@ -11,7 +11,8 @@ export const AuthActionType = {
     LOGIN_USER: "LOGIN_USER",
     LOGOUT_USER: "LOGOUT_USER",
     REGISTER_USER: "REGISTER_USER",
-    LOGIN_FAILED: "LOGIN_FAILED"
+    LOGIN_FAILED: "LOGIN_FAILED",
+    LOGIN_GUEST: "LOGIN_GUEST"
 }
 
 function AuthContextProvider(props) {
@@ -67,6 +68,14 @@ function AuthContextProvider(props) {
                     loggedIn: false,
                     badLogin: payload.bool,
                     errorMsg: payload.msg
+                })
+            }
+            case AuthActionType.LOGIN_GUEST: {
+                return setAuth({
+                    user: null,
+                    loggedIn: true,
+                    badLogin: false,
+                    errorMsg: ""
                 })
             }
             default:
@@ -145,6 +154,14 @@ function AuthContextProvider(props) {
             })
         }
 
+    }
+
+    auth.loginGuest = () => {
+        console.log("Logging in Guest");
+        authReducer({
+            type: AuthActionType.LOGIN_GUEST
+        })
+        history.push("/");
     }
 
     auth.logoutUser = async function() {

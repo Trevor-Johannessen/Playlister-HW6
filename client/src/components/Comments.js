@@ -1,5 +1,6 @@
 import { useContext } from 'react'
 import { GlobalStoreContext } from '../store'
+import AuthContext from '../auth';
 import {Link} from 'react-router-dom'
 import TextField from '@mui/material/TextField';
 import { borders } from '@mui/system';
@@ -10,6 +11,7 @@ import { sizing } from '@mui/system';
 
 export default function Comments(props){
     const { store } = useContext(GlobalStoreContext);
+    const { auth } = useContext(AuthContext);
     let comments = [];
     
     if (store.currentList && store.currentList.comments){
@@ -39,7 +41,7 @@ export default function Comments(props){
                 {comments}
             </div>
             <div id='comment-textbox'>
-                <TextField className='comment-textbox-mui' size='small' id="outlined-basic" label="Comment" variant="outlined" sx={{width : '100%'}} onKeyDown={keyPress}/>
+                <TextField className='comment-textbox-mui' size='small' id="outlined-basic" label="Comment" disabled={auth.user == null} variant="outlined" sx={{width : '100%'}} onKeyDown={keyPress}/>
             </div>
         </div>
     )

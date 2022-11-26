@@ -51,21 +51,29 @@ function ListCard(props) {
 
     let likeList = (event, remove) => {
         event.stopPropagation();
-        let hasDisliked = false;
-        for(let i = 0; i < playlist.dislikes.length; i++) // check if user has already disliked
-            if(playlist.dislikes[i] == auth.user.email)
-                hasDisliked = true;
-        if(!hasDisliked)
-            store.likePlaylist(playlist, remove)
+        if(auth.user != null){
+            let hasDisliked = false;
+            for(let i = 0; i < playlist.dislikes.length; i++) // check if user has already disliked
+                if(playlist.dislikes[i] == auth.user.email)
+                    hasDisliked = true;
+            if(!hasDisliked)
+                store.likePlaylist(playlist, remove)
+        }else{
+            console.log("Can't like list as guest.")
+        }
     }
     let dislikeList = (event, remove) => {
         event.stopPropagation();
-        let hasLiked = false;
-        for(let i = 0; i < playlist.likes.length; i++) // check if the user has already liked
-            if(playlist.likes[i] == auth.user.email)
-                hasLiked = true;
-        if(!hasLiked)
-            store.dislikePlaylist(playlist, remove);
+        if(auth.user != null){
+            let hasLiked = false;
+            for(let i = 0; i < playlist.likes.length; i++) // check if the user has already liked
+                if(playlist.likes[i] == auth.user.email)
+                    hasLiked = true;
+            if(!hasLiked)
+                store.dislikePlaylist(playlist, remove);
+        }else{
+            console.log("Can't dislike list as guest.")
+        }
     }
     let handleTextUpdate = async (event) => {
         if (event.code === "Enter") {
@@ -103,19 +111,28 @@ function ListCard(props) {
         title = <span className='list-card-title'>{playlist.name}</span>;
     }
 
-    let ownerEditingFeatures = (<div className='list-card-editing-button' onClick={(event) => {event.stopPropagation(); store.duplicateList(playlist);}}>Duplicate</div>);
+    let ownerEditingFeatures = (<div className='list-card-editing-button' onClick={(event) => {event.stopPropagation(); if(auth.user != null)store.duplicateList(playlist);}}>Duplicate</div>);
+    // make sure to check if auth is null
+    if(auth.user != null && auth.user.username == playlist.ownerUsername)
+    ownerEditingFeatures= (
+    <div>
+        <div className='list-card-editing-button' onClick={(event) => {event.stopPropagation(); store.markListForDeletion(playlist._id)}}>Delete</div>
+        <div className='list-card-editing-button' onClick={(event) => {event.stopPropagation(); if(auth.user != null)store.duplicateList(playlist);}}>Duplicate</div>
+    </div>);
     // if published
     if(playlist.published != ""){
         let hasLiked = false;
         let hasDisliked = false;
 
-        for(let i = 0; i < playlist.likes.length; i++)
-            if(playlist.likes[i] == auth.user.email)
-                hasLiked = true;
-        for(let i = 0; i < playlist.dislikes.length; i++)
-            if(playlist.dislikes[i] == auth.user.email)
-                hasDisliked = true;
-    
+        if(auth.user != null){ // Guests cannot like playlists 
+            for(let i = 0; i < playlist.likes.length; i++)
+                if(auth.user !=playlist.likes[i] == auth.user.email)
+                    hasLiked = true;
+            for(let i = 0; i < playlist.dislikes.length; i++)
+                if(playlist.dislikes[i] == auth.user.email)
+                    hasDisliked = true;
+        }
+
         let likeButton = (<span className='list-card-ratings-like'><ThumbUpIconOutlined onClick={(event) => likeList(event, false)}/>{playlist.likes.length}</span>)
         let dislikeButton = (<span className='list-card-ratings-dislike'><ThumbDownIconOutlined onClick={(event) => dislikeList(event, false)}/>{playlist.dislikes.length}</span>)
             
@@ -123,7 +140,8 @@ function ListCard(props) {
             likeButton = (<span className='list-card-ratings-like'><ThumbUpIcon onClick={(event) => likeList(event, true)}/>{playlist.likes.length}</span>)
         else if(hasDisliked)
             dislikeButton = (<span className='list-card-ratings-dislike'><ThumbDownIcon onClick={(event) => dislikeList(event, true)}/>{playlist.dislikes.length}</span>)
-           
+
+
         publishedFeatures = 
         (
         <div>
@@ -194,7 +212,7 @@ function ListCard(props) {
             <div className={cardClass}>
                 {/* TODO: ADD DELETE BUTTON WHEN USER OWNS PLAYLIST */}
                 {title}
-                <span className="list-card-owner">By: <Link to=''>{playlist.ownerEmail}</Link></span>
+                <span className="list-card-owner">By: <Link onClick={(event) => {event.stopPropagation(); if(auth.user == null || store.searchCriteria != ""){store.loadPlaylists(playlist.ownerUsername, "ByUser");}}} to=''>{playlist.ownerUsername}</Link></span>
                 {songCards}
                 {publishedFeatures}
                 <span className='list-card-editing-buttons'>{ownerEditingFeatures}</span>

@@ -19,7 +19,7 @@ export default function PlaylisterBody() {
 
     function detectEnter(event) {
         if (event.code === "Enter") {
-            store.loadPlaylists(event.target.value, "");
+            store.loadPlaylists(event.target.value, store.searchCriteria);
             setText(`${event.target.value} Lists`)
         }
     }
@@ -72,17 +72,37 @@ export default function PlaylisterBody() {
             <MenuItem onClick={(event) => {event.stopPropagation(); handleMenuClose(event); store.setSort("DISLIKES")}}>Dislikes (High-Low)</MenuItem>
         </Menu>
     );
-    
+    const sortMenuUser = (
+        <Menu
+            anchorEl={anchorEl}
+            anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+            }}
+            id='sort-menu'
+            keepMounted
+            transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+            }}
+            open={isMenuOpen}
+            onClose={handleMenuClose}
+        >
+            <MenuItem onClick={(event) => {event.stopPropagation(); handleMenuClose(event); store.setSort("CREATION_DATE")}}>Creation Date (Oldest)</MenuItem>
+            <MenuItem onClick={(event) => {event.stopPropagation(); handleMenuClose(event); store.setSort("LAST_EDIT_DATE")}}>Last Edit Date (Newest)</MenuItem>
+            <MenuItem onClick={(event) => {event.stopPropagation(); handleMenuClose(event); store.setSort("NAME")}}>Name (A-Z)</MenuItem>
+        </Menu>
+    );
 
     return(
         <div id='playlister-body'>
             <div id='playlister-body-statusbar'>
                 <div id='playlister-body-statusbar-left' style={{paddingRight: '8%'}}>
-                    <HomeIcon style={{ width: '50px', height: '50px'}} onClick={(event) => {event.stopPropagation(); setText("+ YOUR LISTS"); setHome(true); store.loadLoggedInUsersPlaylists();}}/>
+                    <HomeIcon style={{ width: '50px', height: '50px'}} onClick={(event) => {event.stopPropagation(); if(auth.user != null){setText("+ YOUR LISTS"); setHome(true); store.loadLoggedInUsersPlaylists();}else{console.log("Can't open home as guest");}}}/>
                     <GroupsIcon style={{ width: '50px', height: '50px'}} onClick={(event) => {event.stopPropagation(); setText(""); setHome(false); store.loadPlaylists("", "ByName");}}/>
                     <PersonIcon style={{ width: '50px', height: '50px'}} onClick={(event) => {event.stopPropagation(); setText(""); setHome(false); store.loadPlaylists("", "ByUser");}}/>
                 </div>
-                <TextField className='searchbar' label='Search' onKeyPress={detectEnter}></TextField>
+                <TextField className='searchbar' label='Search' disabled={store.searchCriteria==""} onKeyPress={detectEnter}></TextField>
                 <div id='playlister-body-statusbar-right' style={{paddingLeft: '27%'}} >
                     <span style={{fontSize: '30px', textAlign: 'center'}}>Sort By</span>
                     <MenuIcon 
@@ -97,7 +117,7 @@ export default function PlaylisterBody() {
                 </div>
             </div>
             {bottomBar}
-            {sortMenu}
+            {store.searchCriteria == "" ? sortMenuUser : sortMenu}
         </div>
     )
 }

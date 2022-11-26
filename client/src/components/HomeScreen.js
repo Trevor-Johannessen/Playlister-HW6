@@ -10,6 +10,8 @@ import AddIcon from '@mui/icons-material/Add';
 import Fab from '@mui/material/Fab'
 import List from '@mui/material/List';
 import Typography from '@mui/material/Typography'
+import AuthContext from '../auth';
+
 /*
     This React component lists all the top5 lists in the UI.
     
@@ -19,9 +21,13 @@ const HomeScreen = () => {
     const { store } = useContext(GlobalStoreContext);
     const [playerOpen, setPlayer] = useState(false);
     const [stupidInt, setStupid] = useState(0);
+    const { auth } = useContext(AuthContext);
 
     useEffect(() => {
-        store.loadLoggedInUsersPlaylists();
+        if(auth.user != null)
+            store.loadLoggedInUsersPlaylists();
+        else
+            store.loadPlaylists("", "ByName");
         //store.loadIdNamePairs();
     }, []);
 
@@ -52,6 +58,12 @@ const HomeScreen = () => {
                 break;
             case SortingOption.PUBLISH_DATE:
                 playlists.sort((a, b) => {return new Date(b.published) - new Date(a.published)});
+                break;
+            case SortingOption.CREATION_DATE:
+                playlists.sort((a, b) => {return new Date(a.createdAt) - new Date(b.createdAt)});
+                break;
+            case SortingOption.LAST_EDIT_DATE:
+                playlists.sort((a, b) => {return new Date(b.updatedAt) - new Date(a.updatedAt)});
                 break;
         }
         listCard = 
