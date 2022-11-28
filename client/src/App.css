@@ -415,6 +415,15 @@ body {
   margin-left:3px;
 }
 
+#player {
+  position: absolute;
+  top:20%;
+  right: 1%;
+}
+
+
+
+
 .player-buttons{
   position: absolute;
   top: 16%;

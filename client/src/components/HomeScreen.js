@@ -11,6 +11,7 @@ import Fab from '@mui/material/Fab'
 import List from '@mui/material/List';
 import Typography from '@mui/material/Typography'
 import AuthContext from '../auth';
+import YouTubePlayer from './PlaylisterYouTubePlayer'
 
 /*
     This React component lists all the top5 lists in the UI.
@@ -94,7 +95,6 @@ const HomeScreen = () => {
     return (
         
         <div id="playlist-selector" style={{height: 'inherit'}}>
-            <PlaylisterBody/>
             <div id="list-selector-list">
                 {
                     listCard
@@ -104,9 +104,12 @@ const HomeScreen = () => {
                 <div id='youtube-button' className='player-button' style={youtubeButtonColor} onClick={swapPlayerView}>Player</div>
                 <div id='comments-button' className='player-button' style={commentButtonColor} onClick={swapPlayerView}>Comments</div>
             </div>
-            {playerOpen ? /* TODO: Add youtube player */ null : <Comments/>}
-            
-            <button onClick={() => store.loadUsersPlaylists('obama@gmail.com')}>Load Obamas Secret Playlists</button>
+            <div style={{display: "flex", flexDirection: "row", top: "0px"}}>
+                <button onClick={store.pausePlayer}>Pause</button>
+                <button onClick={store.playPlayer}>Play</button>
+            </div>
+                <PlaylisterBody/>
+            {playerOpen ? <YouTubePlayer/> : <Comments/>}
             {modalJSX}
         </div>)
 }
