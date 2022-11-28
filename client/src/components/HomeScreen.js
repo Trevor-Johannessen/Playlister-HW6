@@ -12,6 +12,10 @@ import List from '@mui/material/List';
 import Typography from '@mui/material/Typography'
 import AuthContext from '../auth';
 import YouTubePlayer from './PlaylisterYouTubePlayer'
+import FastRewindIcon from '@mui/icons-material/FastRewind';
+import PauseIcon from '@mui/icons-material/Pause';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import FastForwardIcon from '@mui/icons-material/FastForward';
 
 /*
     This React component lists all the top5 lists in the UI.
@@ -91,10 +95,33 @@ const HomeScreen = () => {
         modalJSX = <MUIDeleteModal />
     }
 
+    let videoPlayer = (
+        <div id="video-player">
+            <YouTubePlayer/>
+            <div id="video-details" style={{display: 'flex', flexDirection: 'column'}}>
+                <p className="video-detail-text">
+                    <strong>Now Playing:</strong><br/>
+                    Playlist: {store.currentList ? store.currentList.name : ""}<br/>
+                    Song #: {store.currentList ? store.currentSongIndex +1: ""}<br/>
+                    Title: {store.currentList ? store.currentList.songs[store.currentSongIndex].title : ""}<br/>
+                    Artist: {store.currentList ? store.currentList.songs[store.currentSongIndex].artist : ""}
+                </p>
+                <div id='player-button-row' style={{display: 'flex', flexDirection: 'row'}}>
+                    <FastRewindIcon onClick={store.prevSong} fontSize="large"/>
+                    <PauseIcon onClick={store.pausePlayer} fontSize="large"/>
+                    <PlayArrowIcon onClick={store.playPlayer} fontSize="large"/>
+                    <FastForwardIcon onClick={store.nextSong} fontSize="large"/>
+                </div>
+            </div>
+        </div>
+    );
+
+
+
 
     return (
-        
         <div id="playlist-selector" style={{height: 'inherit'}}>
+            <PlaylisterBody/>
             <div id="list-selector-list">
                 {
                     listCard
@@ -104,12 +131,7 @@ const HomeScreen = () => {
                 <div id='youtube-button' className='player-button' style={youtubeButtonColor} onClick={swapPlayerView}>Player</div>
                 <div id='comments-button' className='player-button' style={commentButtonColor} onClick={swapPlayerView}>Comments</div>
             </div>
-            <div style={{display: "flex", flexDirection: "row", top: "0px"}}>
-                <button onClick={store.pausePlayer}>Pause</button>
-                <button onClick={store.playPlayer}>Play</button>
-            </div>
-                <PlaylisterBody/>
-            {playerOpen ? <YouTubePlayer/> : <Comments/>}
+            {playerOpen ? videoPlayer : <Comments/>}
             {modalJSX}
         </div>)
 }

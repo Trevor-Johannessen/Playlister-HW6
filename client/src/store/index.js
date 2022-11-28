@@ -8,6 +8,7 @@ import RemoveSong_Transaction from '../transactions/RemoveSong_Transaction'
 import UpdateSong_Transaction from '../transactions/UpdateSong_Transaction'
 import AuthContext from '../auth'
 import { Experimental_CssVarsProvider } from '@mui/material'
+import { Global } from '@emotion/react'
 /*
     This is our global data store. Note that it uses the Flux design pattern,
     which makes use of things like actions and reducers. 
@@ -38,7 +39,8 @@ export const GlobalStoreActionType = {
     SET_PLAYLIST_SEARCH: "SET_PLAYLIST_SEARCH",
     SET_CURRENT_EDITING_LIST: "SET_CURRENT_EDITING_LIST",
     SET_SORT: "SET_SORT",
-    SET_PLAYER: "SET_PLAYER"
+    SET_PLAYER: "SET_PLAYER",
+    SET_CURRENT_INDEX: "SET_CURRENT_INDEX"
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -70,7 +72,7 @@ function GlobalStoreContextProvider(props) {
         currentModal : CurrentModal.NONE,
         idNamePairs: [],
         currentList: null,
-        currentSongIndex : -1,
+        currentSongIndex : 0,
         currentSong : null,
         newListCounter: 0,
         listNameActive: false,
@@ -98,7 +100,7 @@ function GlobalStoreContextProvider(props) {
                     currentModal : CurrentModal.NONE,
                     idNamePairs: payload.idNamePairs,
                     currentList: null,
-                    currentSongIndex: -1,
+                    currentSongIndex: store.currentSongIndex,
                     currentSong: null,
                     newListCounter: store.newListCounter,
                     listNameActive: false,
@@ -117,7 +119,7 @@ function GlobalStoreContextProvider(props) {
                     currentModal : CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
                     currentList: null,
-                    currentSongIndex: -1,
+                    currentSongIndex: store.currentSongIndex,
                     currentSong: null,
                     newListCounter: store.newListCounter,
                     listNameActive: false,
@@ -136,7 +138,7 @@ function GlobalStoreContextProvider(props) {
                     currentModal : CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
                     currentList: store.currentList,
-                    currentSongIndex: -1,
+                    currentSongIndex: store.currentSongIndex,
                     currentSong: null,
                     newListCounter: store.newListCounter + 1,
                     listNameActive: false,
@@ -154,7 +156,7 @@ function GlobalStoreContextProvider(props) {
                     currentModal : CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
                     currentList: null,
-                    currentSongIndex: -1,
+                    currentSongIndex: store.currentSongIndex,
                     currentSong: null,
                     newListCounter: store.newListCounter,
                     listNameActive: false,
@@ -173,7 +175,7 @@ function GlobalStoreContextProvider(props) {
                     currentModal : CurrentModal.NONE,
                     idNamePairs: payload,
                     currentList: null,
-                    currentSongIndex: -1,
+                    currentSongIndex: store.currentSongIndex,
                     currentSong: null,
                     newListCounter: store.newListCounter,
                     listNameActive: false,
@@ -191,7 +193,7 @@ function GlobalStoreContextProvider(props) {
                     currentModal : CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
                     currentList: null,
-                    currentSongIndex: -1,
+                    currentSongIndex: store.currentSongIndex,
                     currentSong: null,
                     newListCounter: store.newListCounter,
                     listNameActive: false,
@@ -209,7 +211,7 @@ function GlobalStoreContextProvider(props) {
                     currentModal : CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
                     currentList: null,
-                    currentSongIndex: -1,
+                    currentSongIndex: store.currentSongIndex,
                     currentSong: null,
                     newListCounter: store.newListCounter,
                     listNameActive: false,
@@ -228,7 +230,7 @@ function GlobalStoreContextProvider(props) {
                     currentModal : CurrentModal.DELETE_LIST,
                     idNamePairs: store.idNamePairs,
                     currentList: null,
-                    currentSongIndex: -1,
+                    currentSongIndex: store.currentSongIndex,
                     currentSong: null,
                     newListCounter: store.newListCounter,
                     listNameActive: false,
@@ -247,7 +249,7 @@ function GlobalStoreContextProvider(props) {
                     currentModal : CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
                     currentList: null,
-                    currentSongIndex: -1,
+                    currentSongIndex: store.currentSongIndex,
                     currentSong: null,
                     newListCounter: store.newListCounter,
                     listNameActive: false,
@@ -266,7 +268,7 @@ function GlobalStoreContextProvider(props) {
                     currentModal : CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
                     currentList: payload,
-                    currentSongIndex: -1,
+                    currentSongIndex: store.currentSongIndex,
                     currentSong: null,
                     newListCounter: store.newListCounter,
                     listNameActive: false,
@@ -285,7 +287,7 @@ function GlobalStoreContextProvider(props) {
                     currentModal : CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
                     currentList: store.currentList,
-                    currentSongIndex: -1,
+                    currentSongIndex: store.currentSongIndex,
                     currentSong: null,
                     newListCounter: store.newListCounter,
                     listNameActive: false,
@@ -304,7 +306,7 @@ function GlobalStoreContextProvider(props) {
                     currentModal : CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
                     currentList: store.currentList,
-                    currentSongIndex: -1,
+                    currentSongIndex: store.currentSongIndex,
                     currentSong: null,
                     newListCounter: store.newListCounter,
                     listNameActive: payload.bool,
@@ -359,7 +361,7 @@ function GlobalStoreContextProvider(props) {
                     currentModal : CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
                     currentList: store.currentList,
-                    currentSongIndex: -1,
+                    currentSongIndex: store.currentSongIndex,
                     currentSong: null,
                     newListCounter: store.newListCounter,
                     listNameActive: false,
@@ -377,7 +379,7 @@ function GlobalStoreContextProvider(props) {
                     currentModal : CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
                     currentList: store.currentList,
-                    currentSongIndex: -1,
+                    currentSongIndex: store.currentSongIndex,
                     currentSong: null,
                     newListCounter: store.newListCounter,
                     listNameActive: false,
@@ -395,7 +397,7 @@ function GlobalStoreContextProvider(props) {
                     currentModal : CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
                     currentList: store.currentList,
-                    currentSongIndex: -1,
+                    currentSongIndex: 0,
                     currentSong: null,
                     newListCounter: store.newListCounter,
                     listNameActive: false,
@@ -406,6 +408,25 @@ function GlobalStoreContextProvider(props) {
                     searchCriteria: store.searchCriteria,
                     sortMethod: store.sortMethod,
                     player: payload
+                });
+            }
+            case GlobalStoreActionType.SET_CURRENT_INDEX: {
+                return setStore({
+                    currentModal : CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
+                    currentList: store.currentList,
+                    currentSongIndex: payload,
+                    currentSong: null,
+                    newListCounter: store.newListCounter,
+                    listNameActive: false,
+                    listIdMarkedForDeletion: null,
+                    listMarkedForDeletion: null,
+                    storedPlaylists: store.storedPlaylists,
+                    currentEditingList : store.currentEditingList,
+                    searchCriteria: store.searchCriteria,
+                    sortMethod : store.sortMethod,
+                    player: store.player,
+                    
                 });
             }
             
@@ -678,6 +699,34 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
+    store.nextSong = () => {
+        console.log(`First currentSong = ${store.currentSongIndex}`);
+        if(store.player != null){
+            let currentSong = (store.currentSongIndex+1) % store.currentList.songs.length;
+            console.log(`Second currentSong = ${currentSong}`);
+            storeReducer({
+                type: GlobalStoreActionType.SET_CURRENT_INDEX,
+                payload: currentSong
+            });
+            console.log(store.currentList.songs[currentSong].youTubeId)
+            store.player.loadVideoById(store.currentList.songs[currentSong].youTubeId);
+            store.player.playVideo();
+
+        }
+    }
+    
+    store.prevSong = () => {
+        if(store.player != null){
+            let currentSong = (store.currentSongIndex-1) < 0 ? store.currentSongIndex-1 : store.currentList.songs.length-1;
+            storeReducer({
+                type: GlobalStoreActionType.SET_CURRENT_INDEX,
+                payload: currentSong
+            });
+            store.player.loadVideoById(store.currentList.songs[currentSong].youTubeId);
+            store.player.playVideo();
+
+        }
+    }
 
     // THE FOLLOWING 5 FUNCTIONS ARE FOR COORDINATING THE DELETION
     // OF A LIST, WHICH INCLUDES USING A VERIFICATION MODAL. THE

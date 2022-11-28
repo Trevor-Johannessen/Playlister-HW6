@@ -26,8 +26,8 @@ export default function YouTubePlayerExample() {
     let currentSong = 0;
 
     const playerOptions = {
-        height: '50%',
-        width: '47%',
+        height: '40%',
+        width: '42%',
         playerVars: {
             // https://developers.google.com/youtube/player_parameters
             autoplay: 0,
@@ -52,8 +52,6 @@ export default function YouTubePlayerExample() {
         loadAndPlayCurrentSong(event.target);
         event.target.playVideo();
         store.setPlayer(event.target);
-        console.log("PLAYER = ")
-        console.log(event.target)
     }
 
     // THIS IS OUR EVENT HANDLER FOR WHEN THE YOUTUBE PLAYER'S STATE
