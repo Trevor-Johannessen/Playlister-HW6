@@ -96,7 +96,7 @@ const HomeScreen = () => {
     }
 
     let videoPlayer = (
-        <div id="video-player">
+        <div id="video-player" style={{display: playerOpen ? "" : "none"}}>
             <YouTubePlayer/>
             <div id="video-details" style={{display: 'flex', flexDirection: 'column'}}>
                 <p className="video-detail-text">
@@ -131,7 +131,8 @@ const HomeScreen = () => {
                 <div id='youtube-button' className='player-button' style={youtubeButtonColor} onClick={swapPlayerView}>Player</div>
                 <div id='comments-button' className='player-button' style={commentButtonColor} onClick={swapPlayerView}>Comments</div>
             </div>
-            {playerOpen ? videoPlayer : <Comments/>}
+            {videoPlayer}
+            {playerOpen ?  "" : <Comments/>}
             {modalJSX}
         </div>)
 }
