@@ -652,13 +652,19 @@ function GlobalStoreContextProvider(props) {
                 console.log('playlistArray = ')
                 console.log(playlistArray)
 
+                // this garbage is to make sure that when a playlist is created, a shallow copy is assigned to inputCurrentEditingList
+                let playlistIndex = -1;
                 if(inputCurrentEditingList != null){
-                    let playlistIndex = playlistArray.indexOf(inputCurrentEditingList)
+                    for(let i=0; i < playlistArray.length; i++) // the amount of which I care, is naught.
+                        if(playlistArray[i]._id == inputCurrentEditingList._id)
+                            playlistIndex = i;
                 }
+                let editingLookupValue = playlistIndex == -1 ? null : playlistArray[playlistIndex]; // do this to ensure shallow copy of playlist
+                
 
                 storeReducer({
                     type: GlobalStoreActionType.LOAD_PLAYLISTS,
-                    payload: {playlist: playlistArray, criteria : "", currentEditingList: inputCurrentEditingList}
+                    payload: {playlist: playlistArray, criteria : "", currentEditingList: editingLookupValue}
                 });
             }else{
                 console.log("API FAILED TO GET PLAYLISTS")
