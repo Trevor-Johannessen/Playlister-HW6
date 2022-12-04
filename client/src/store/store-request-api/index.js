@@ -41,6 +41,7 @@ export const deletePlaylistById = (id) => api.delete(`/playlist/${id}`)
 export const getPlaylistById = (id) => api.get(`/playlist/${id}`)
 export const getPlaylistPairs = () => api.get(`/playlistpairs/`)
 export const getUsersPlaylists = (id) => api.get(`/playlist/user/${id}`)
+export const listenPlaylist = (id) => api.put(`playlist/listens/${id}`)
 export const getLoggedInUsersPlaylists = (id) => api.get(`/playlist/getLoggedInUser/${id}`)
 export const updatePlaylistById = (id, playlist) => {
     return api.put(`/playlist/${id}`, {
@@ -78,7 +79,8 @@ const apis = {
     getUsersPlaylists,
     likePlaylistById,
     dislikePlaylistById,
-    getLoggedInUsersPlaylists
+    getLoggedInUsersPlaylists,
+    listenPlaylist
 }
 
 export default apis

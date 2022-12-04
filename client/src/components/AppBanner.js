@@ -13,6 +13,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import logo from '../images/Playlister.png'
 
 export default function AppBanner() {
     const { auth } = useContext(AuthContext);
@@ -86,6 +87,7 @@ export default function AppBanner() {
     
     function getAccountMenu(loggedIn) {
         let userInitials = auth.getUserInitials();
+        if(!userInitials) userInitials ="Guest";
         if (loggedIn) 
             return <div>{userInitials}</div>;
         else
@@ -102,7 +104,7 @@ export default function AppBanner() {
                         component="div"
                         sx={{ display: { xs: 'none', sm: 'block' } }}                        
                     >
-                        <Link style={{ textDecoration: 'none', color: 'white' }} to='/'>⌂</Link>
+                        <img src={logo} style={{maxWidth: "20%", maxHeight: "20%", paddingTop: "10px"}} alt="Playlister"></img>
                     </Typography>
                     <div
                         style={{position: 'absolute', right: '3%'}}

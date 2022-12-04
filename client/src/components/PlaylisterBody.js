@@ -8,6 +8,7 @@ import TextField from '@mui/material/TextField';
 import MenuIcon from '@mui/icons-material/Menu';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import Tooltip from '@mui/material/Tooltip';
 
 export default function PlaylisterBody() {
     const { store } = useContext(GlobalStoreContext);
@@ -19,7 +20,9 @@ export default function PlaylisterBody() {
 
     function detectEnter(event) {
         if (event.code === "Enter") {
-            store.loadPlaylists(event.target.value, store.searchCriteria);
+            let searchString = event.target.value;
+            searchString = searchString == "" ? -1 : searchString;
+            store.loadPlaylists(searchString, store.searchCriteria);
             setText(`${event.target.value} Lists`)
         }
     }
@@ -40,11 +43,15 @@ export default function PlaylisterBody() {
     }
 
     let bottomBar = (<div id="playlister-body-bottom-bar">{bottomBarText}</div>);
-    if(inHome){
+    if(inHome && auth.user != null){
         bottomBar = (
-            <div id="playlister-body-bottom-bar"
-                onClick={(event) => {event.stopPropagation(); addNewList()}}>
-                + YOUR LISTS
+            <div id="playlister-body-bottom-bar">
+                    <div id="your-lists-text"
+                    onClick={(event) => {event.stopPropagation(); addNewList()}}
+                    style={{display: "inline-block"}}>
+                        + YOUR LISTS
+                    </div>
+                
             </div>
         )
     }
@@ -98,7 +105,7 @@ export default function PlaylisterBody() {
         <div id='playlister-body'>
             <div id='playlister-body-statusbar'>
                 <div id='playlister-body-statusbar-left' style={{paddingRight: '8%'}}>
-                    <HomeIcon style={{ width: '50px', height: '50px'}} onClick={(event) => {event.stopPropagation(); if(auth.user != null){setText("+ YOUR LISTS"); setHome(true); store.loadLoggedInUsersPlaylists();}else{console.log("Can't open home as guest");}}}/>
+                <Tooltip title={auth.user != null ? "" : "Guests cannot go home."}><HomeIcon style={{ width: '50px', height: '50px'}} onClick={(event) => {event.stopPropagation(); if(auth.user != null){setText("+ YOUR LISTS"); setHome(true); store.loadLoggedInUsersPlaylists();}else{console.log("Can't open home as guest");}}}/></Tooltip>
                     <GroupsIcon style={{ width: '50px', height: '50px'}} onClick={(event) => {event.stopPropagation(); setText(""); setHome(false); store.loadPlaylists("", "ByName");}}/>
                     <PersonIcon style={{ width: '50px', height: '50px'}} onClick={(event) => {event.stopPropagation(); setText(""); setHome(false); store.loadPlaylists("", "ByUser");}}/>
                 </div>

@@ -48,8 +48,8 @@ function SongCard(props) {
     }
 
     let cardClass = "song-card";
-    console.log(`Song = `)
-    console.log(song)
+    //console.log(`Song = `)
+    //console.log(song)
     if(song === "ADD BUTTON"){
         return(
             <div
@@ -76,12 +76,15 @@ function SongCard(props) {
                     >X</div>
             )
 
+    let selectedClass = store.currentList != null && store.currentList.songs[store.currentSongIndex] == song ? " selected-card" : "";
+    
     return (
         <div
             key={index}
             id={'song-' + index + '-card'}
-            className='song-card-body'
+            className={'song-card-body' + selectedClass}
             draggable="true"
+            onClick={(event) => {event.stopPropagation();}}
             onDoubleClick={(event) => {event.stopPropagation(); handleEditSong() }}
             onDragStart={handleDragStart}
             onDrop={handleDrop}

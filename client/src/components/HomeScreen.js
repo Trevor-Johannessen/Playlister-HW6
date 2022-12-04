@@ -95,6 +95,9 @@ const HomeScreen = () => {
         modalJSX = <MUIDeleteModal />
     }
 
+
+
+
     let videoPlayer = (
         <div id="video-player" style={{display: playerOpen ? "" : "none"}}>
             <YouTubePlayer/>
@@ -103,8 +106,8 @@ const HomeScreen = () => {
                     <strong>Now Playing:</strong><br/>
                     Playlist: {store.currentList ? store.currentList.name : ""}<br/>
                     Song #: {store.currentList ? store.currentSongIndex +1: ""}<br/>
-                    Title: {store.currentList ? store.currentList.songs[store.currentSongIndex].title : ""}<br/>
-                    Artist: {store.currentList ? store.currentList.songs[store.currentSongIndex].artist : ""}
+                    Title: {store.currentList && store.currentList.songs.length > 0 ? store.currentList.songs[store.currentSongIndex].title : ""}<br/>
+                    Artist: {store.currentList && store.currentList.songs.length > 0 ? store.currentList.songs[store.currentSongIndex].artist : ""}
                 </p>
                 <div id='player-button-row' style={{display: 'flex', flexDirection: 'row'}}>
                     <FastRewindIcon onClick={store.prevSong} fontSize="large"/>

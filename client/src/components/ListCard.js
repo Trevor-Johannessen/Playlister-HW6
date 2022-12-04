@@ -16,6 +16,8 @@ import ThumbUpIconOutlined from '@mui/icons-material/ThumbUpOutlined';
 import ThumbDownIconOutlined from '@mui/icons-material/ThumbDownOutlined';
 import AuthContext from '../auth'
 import ReportGmailerrorredIcon from '@mui/icons-material/ReportGmailerrorred';
+import Tooltip from '@mui/material/Tooltip';
+
 
 /*
     This is a card in our list of top 5 lists. It lets select
@@ -87,6 +89,7 @@ function ListCard(props) {
                 playlist.name = oldname;
             }
             setEdit(false) // disable text box;
+            //store.setSort(store.sortMethod);
         }
     }
 
@@ -126,15 +129,15 @@ function ListCard(props) {
 
         if(auth.user != null){ // Guests cannot like playlists 
             for(let i = 0; i < playlist.likes.length; i++)
-                if(auth.user !=playlist.likes[i] == auth.user.email)
+                if(playlist.likes[i] == auth.user.email)
                     hasLiked = true;
             for(let i = 0; i < playlist.dislikes.length; i++)
                 if(playlist.dislikes[i] == auth.user.email)
                     hasDisliked = true;
         }
 
-        let likeButton = (<span className='list-card-ratings-like'><ThumbUpIconOutlined onClick={(event) => likeList(event, false)}/>{playlist.likes.length}</span>)
-        let dislikeButton = (<span className='list-card-ratings-dislike'><ThumbDownIconOutlined onClick={(event) => dislikeList(event, false)}/>{playlist.dislikes.length}</span>)
+        let likeButton = (<span className='list-card-ratings-like'><Tooltip title={auth.user != null ? "" : "Guests cannot like playlists."}><ThumbUpIconOutlined onClick={(event) => likeList(event, false)}/></Tooltip>{playlist.likes.length}</span>)
+        let dislikeButton = (<span className='list-card-ratings-dislike'><Tooltip title={auth.user != null ? "" : "Guests cannot dislike playlists."}><ThumbDownIconOutlined onClick={(event) => dislikeList(event, false)}/></Tooltip>{playlist.dislikes.length}</span>)
             
         if(hasLiked)
             likeButton = (<span className='list-card-ratings-like'><ThumbUpIcon onClick={(event) => likeList(event, true)}/>{playlist.likes.length}</span>)
@@ -191,6 +194,8 @@ function ListCard(props) {
     }
 
 
+    if(store.currentList != null && store.currentList == playlist)
+        cardClass += " selected-list";
 
 
 
@@ -210,7 +215,6 @@ function ListCard(props) {
             }}
         >
             <div className={cardClass}>
-                {/* TODO: ADD DELETE BUTTON WHEN USER OWNS PLAYLIST */}
                 {title}
                 <span className="list-card-owner">By: <Link onClick={(event) => {event.stopPropagation(); if(auth.user == null || store.searchCriteria != ""){store.loadPlaylists(playlist.ownerUsername, "ByUser");}}} to=''>{playlist.ownerUsername}</Link></span>
                 {songCards}

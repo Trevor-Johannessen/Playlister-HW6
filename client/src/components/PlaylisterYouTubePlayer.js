@@ -19,7 +19,7 @@ export default function YouTubePlayerExample() {
     
     // SET YOUTUBE PLAYLIST TO CURRENT PLAYLIST
     let playlist = [];
-    if(store.currentList != null)
+    if(store.currentList != null && store.currentList.songs)
         playlist = store.currentList.songs.map((song) => song.youTubeId);
     
     // THIS IS THE INDEX OF THE SONG CURRENTLY IN USE IN THE PLAYLIST
@@ -67,6 +67,7 @@ export default function YouTubePlayerExample() {
         } else if (playerStatus === 0) {
             // THE VIDEO HAS COMPLETED PLAYING
             console.log("0 Video ended");
+            store.nextSong();
             incSong();
             loadAndPlayCurrentSong(player);
         } else if (playerStatus === 1) {

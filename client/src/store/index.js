@@ -192,7 +192,7 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     currentModal : CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
-                    currentList: null,
+                    currentList: store.currentList,
                     currentSongIndex: store.currentSongIndex,
                     currentSong: null,
                     newListCounter: store.newListCounter,
@@ -268,7 +268,7 @@ function GlobalStoreContextProvider(props) {
                     currentModal : CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
                     currentList: payload,
-                    currentSongIndex: store.currentSongIndex,
+                    currentSongIndex: 0,
                     currentSong: null,
                     newListCounter: store.newListCounter,
                     listNameActive: false,
@@ -513,9 +513,8 @@ function GlobalStoreContextProvider(props) {
             if (response.status === 201) {
                 tps.clearAllTransactions();
                 let newList = response.data.playlist;
-                auth.user.playlists.push("Placeholder")
+                auth.user.playlists.push(newList._id)
                 store.loadLoggedInUsersPlaylists(newList);
-                
             }
             else {
                 console.log("API FAILED TO CREATE A NEW LIST");
@@ -589,15 +588,19 @@ function GlobalStoreContextProvider(props) {
             if (response.data.success) {
                 let playlistArray = response.data.data;
                 let searchType = criteria != "" ? criteria : store.searchCriteria
-                if(searchType=="ByName" && searchString != "")
+                if(searchString === -1){
+                    playlistArray = [];
+                }
+                else if(searchType=="ByName" && searchString != "")
                     playlistArray = playlistArray.filter((item) => item.name.toLowerCase().includes(searchString.toLowerCase()));
-                if(searchType=="ByUser" && searchString != "")
+                else if(searchType=="ByUser" && searchString != "")
                     playlistArray = playlistArray.filter((item) => {
                                                             if(exactMatch){
                                                                 return item.ownerUsername.toLowerCase() == searchString.toLowerCase()
                                                             }else{
                                                                 return item.ownerUsername.toLowerCase().includes(searchString.toLowerCase())
                                                             }});
+                
                 console.log('playlistArray = ')
                 console.log(playlistArray)
                 storeReducer({
@@ -615,13 +618,10 @@ function GlobalStoreContextProvider(props) {
 
     store.setPlaylistSearch = function(type){
         console.log(`Setting search criteria = ${type}`)
-        async function asyncSetPlaylist(type){
-            await storeReducer({
-                type: GlobalStoreActionType.SET_PLAYLIST_SEARCH,
-                payload: type
-            });
-        }
-        asyncSetPlaylist(type)
+        storeReducer({
+            type: GlobalStoreActionType.SET_PLAYLIST_SEARCH,
+            payload: type
+        });
     }
 
 
@@ -651,6 +651,11 @@ function GlobalStoreContextProvider(props) {
                 let playlistArray = response.data.data;
                 console.log('playlistArray = ')
                 console.log(playlistArray)
+
+                if(inputCurrentEditingList != null){
+                    let playlistIndex = playlistArray.indexOf(inputCurrentEditingList)
+                }
+
                 storeReducer({
                     type: GlobalStoreActionType.LOAD_PLAYLISTS,
                     payload: {playlist: playlistArray, criteria : "", currentEditingList: inputCurrentEditingList}
@@ -717,7 +722,7 @@ function GlobalStoreContextProvider(props) {
     
     store.prevSong = () => {
         if(store.player != null){
-            let currentSong = (store.currentSongIndex-1) < 0 ? store.currentSongIndex-1 : store.currentList.songs.length-1;
+            let currentSong = store.currentSongIndex > 0 ? store.currentSongIndex-1 : store.currentList.songs.length-1;
             storeReducer({
                 type: GlobalStoreActionType.SET_CURRENT_INDEX,
                 payload: currentSong
@@ -855,10 +860,16 @@ function GlobalStoreContextProvider(props) {
 
 
     store.setCurrentList = function (playlist) {
-        storeReducer({
-            type: GlobalStoreActionType.SET_CURRENT_LIST,
-            payload: playlist
-        })
+        async function asyncSetCurrentList(playlist){
+            let response = await api.listenPlaylist(playlist._id);
+            playlist.listens+=1;
+            console.log(response)
+            storeReducer({
+                type: GlobalStoreActionType.SET_CURRENT_LIST,
+                payload: playlist
+            })
+        }
+        asyncSetCurrentList(playlist)
     }
 
     store.setCurrentEditingList = function (playlist) {
@@ -878,8 +889,12 @@ function GlobalStoreContextProvider(props) {
     // THIS FUNCTION CREATES A NEW SONG IN THE CURRENT LIST
     // USING THE PROVIDED DATA AND PUTS THIS SONG AT INDEX
     store.createSong = function(index, song) {
-        let list = store.currentEditingList;      
+        let list = store.currentEditingList;   
         list.songs.splice(index, 0, song);
+        //let storedPlaylist = store.storedPlaylists[store.storedPlaylists.length-1];
+        //storedPlaylist.songs.splice(index, 0, song);
+
+        console.log(list.songs)
         // NOW MAKE IT OFFICIAL
         store.updateCurrentList();
     }
@@ -994,7 +1009,7 @@ function GlobalStoreContextProvider(props) {
     }
     // THIS FUNCTION UPDATES THE TEXT IN THE ITEM AT index TO text
     store.updateSong = function(index, songData) {
-        let list = store.currentList;
+        let list = store.currentEditingList;
         let song = list.songs[index];
         song.title = songData.title;
         song.artist = songData.artist;
@@ -1002,11 +1017,6 @@ function GlobalStoreContextProvider(props) {
 
         // NOW MAKE IT OFFICIAL
         store.updateCurrentList();
-    }
-    store.addNewSong = () => {
-        let playlistSize = store.getPlaylistSize();
-        store.addCreateSongTransaction(
-            playlistSize, "Untitled", "?", "Li4j82QbBvk");
     }
     // THIS FUNCDTION ADDS A CreateSong_Transaction TO THE TRANSACTION STACK
     store.addCreateSongTransaction = (index, title, artist, youTubeId) => {
@@ -1031,7 +1041,7 @@ function GlobalStoreContextProvider(props) {
         tps.addTransaction(transaction);
     }
     store.addUpdateSongTransaction = function (index, newSongData) {
-        let song = store.currentList.songs[index];
+        let song = store.currentEditingList.songs[index];
         let oldSongData = {
             title: song.title,
             artist: song.artist,

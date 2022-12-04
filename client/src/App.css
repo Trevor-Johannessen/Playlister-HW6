@@ -237,6 +237,10 @@ body {
   flex-direction: column;
 }
 
+.selected-list{
+  background-color: darkcyan;
+}
+
 .list-card-title{
   font-size: 15pt;
   position: absolute;
@@ -327,6 +331,10 @@ body {
 .song-card {
   color: inherit;
   text-decoration: inherit;
+}
+
+.selected-card{
+  background-color: yellow;
 }
 
 #song-add-card{
