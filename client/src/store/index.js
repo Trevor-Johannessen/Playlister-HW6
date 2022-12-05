@@ -739,6 +739,17 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
+    store.setSong = (newIndex) => {
+        if(store.player != null && store.currentList == store.currentEditingList){
+            storeReducer({
+                type: GlobalStoreActionType.SET_CURRENT_INDEX,
+                payload: newIndex
+            });
+            store.player.loadVideoById(store.currentList.songs[newIndex].youTubeId);
+            store.player.playVideo();
+        }
+    }
+
     // THE FOLLOWING 5 FUNCTIONS ARE FOR COORDINATING THE DELETION
     // OF A LIST, WHICH INCLUDES USING A VERIFICATION MODAL. THE
     // FUNCTIONS ARE markListForDeletion, deleteList, deleteMarkedList,

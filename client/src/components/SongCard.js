@@ -84,7 +84,7 @@ function SongCard(props) {
             id={'song-' + index + '-card'}
             className={'song-card-body' + selectedClass}
             draggable="true"
-            onClick={(event) => {event.stopPropagation();}}
+            onClick={(event) => {event.stopPropagation(); store.setSong(index)}}
             onDoubleClick={(event) => {event.stopPropagation(); handleEditSong() }}
             onDragStart={handleDragStart}
             onDrop={handleDrop}
@@ -92,14 +92,7 @@ function SongCard(props) {
             onDragLeave={handleDragLeave}
             onDragOver={handleDragOver}
         >
-            {index + 1}. <a
-                id={'song-' + index + '-link'}
-                className="song-card"
-                href={"https://www.youtube.com/watch?v=" + song.youTubeId}
-                target="_blank"
-                rel="noreferrer noopener">
-                {song.title} by {song.artist}
-            </a>
+            {index + 1}. {song.title} by {song.artist}
             
             {deleteButton}
         </div>

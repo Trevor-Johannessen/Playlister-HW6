@@ -51,17 +51,24 @@ body {
   vertical-align: center;
   display:flex;
   flex-direction: column;
+  align-items:center;
 }
 
 #splash-screen-button-box {
   font-size: 1.5vw;
+  flex: 1;
 }
 
 .splash-screen-button{
   font-size: 1.5vw;
-  color: inherit; /* blue colors for links too */
+  color: white;
   text-decoration: inherit; /* no underline */
   margin-left:10px;
+  background: darkgray;
+  border-color:black;
+  border-style:solid;
+  border-width: 0px 1px 1px 0px;
+  margin-left:3vw;
 }
 
 #edit-toolbar {
@@ -78,6 +85,8 @@ body {
 .splash-screen-text{
   color: white;
   font-size: 1.5vw;
+
+  flex: 1;
 }
 
 
