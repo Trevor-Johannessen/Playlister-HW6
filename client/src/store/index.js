@@ -40,7 +40,8 @@ export const GlobalStoreActionType = {
     SET_CURRENT_EDITING_LIST: "SET_CURRENT_EDITING_LIST",
     SET_SORT: "SET_SORT",
     SET_PLAYER: "SET_PLAYER",
-    SET_CURRENT_INDEX: "SET_CURRENT_INDEX"
+    SET_CURRENT_INDEX: "SET_CURRENT_INDEX",
+    SET_CURRENT_TRACK: "SET_CURRENT_TRACK"
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -127,6 +128,24 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: null,
                     storedPlaylists: store.storedPlaylists,
                     currentEditingList : null,
+                    searchCriteria: store.searchCriteria,
+                    sortMethod: store.sortMethod,
+                    player: store.player
+                })
+            }
+            case GlobalStoreActionType.SET_CURRENT_TRACK: {
+                return setStore({
+                    currentModal : CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
+                    currentList: store.currentList,
+                    currentSongIndex: payload,
+                    currentSong: null,
+                    newListCounter: store.newListCounter,
+                    listNameActive: false,
+                    listIdMarkedForDeletion: null,
+                    listMarkedForDeletion: null,
+                    storedPlaylists: store.storedPlaylists,
+                    currentEditingList : store.currentEditingList,
                     searchCriteria: store.searchCriteria,
                     sortMethod: store.sortMethod,
                     player: store.player
@@ -343,11 +362,11 @@ function GlobalStoreContextProvider(props) {
                     currentModal : CurrentModal.REMOVE_SONG,
                     idNamePairs: store.idNamePairs,
                     currentList: store.currentList,
-                    currentSongIndex: payload.currentSongIndex,
+                    currentSongIndex: store.currentSongIndex,
                     currentSong: payload.currentSong,
                     newListCounter: store.newListCounter,
                     listNameActive: false,
-                    listIdMarkedForDeletion: null,
+                    listIdMarkedForDeletion: payload.currentSongIndex,
                     listMarkedForDeletion: null,
                     storedPlaylists: store.storedPlaylists,
                     currentEditingList : store.currentEditingList,
@@ -1018,6 +1037,18 @@ function GlobalStoreContextProvider(props) {
     // THIS FUNCTION REMOVES THE SONG AT THE index LOCATION
     // FROM THE CURRENT LIST
     store.removeSong = function(index) {
+        
+        if(store.currentList == store.currentEditingList){
+            console.log("Deleted song from current index")
+            let newListIndex = index <= store.currentSongIndex ? store.currentSongIndex == 0 ? 0 : store.currentSongIndex-1 : store.currentSongIndex;
+            console.log(newListIndex);
+            storeReducer({
+                type: GlobalStoreActionType.SET_CURRENT_INDEX,
+                payload: newListIndex
+            });
+        }
+
+
         let list = store.currentEditingList;      
         list.songs.splice(index, 1); 
 
@@ -1052,7 +1083,7 @@ function GlobalStoreContextProvider(props) {
     }
     // THIS FUNCTION ADDS A RemoveSong_Transaction TO THE TRANSACTION STACK
     store.addRemoveSongTransaction = () => {
-        let index = store.currentSongIndex;
+        let index = store.listIdMarkedForDeletion;
         let song = store.currentEditingList.songs[index];
         let transaction = new RemoveSong_Transaction(store, index, song);
         tps.addTransaction(transaction);

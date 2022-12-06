@@ -30,7 +30,7 @@ export default function YouTubePlayerExample() {
         width: '42%',
         playerVars: {
             // https://developers.google.com/youtube/player_parameters
-            autoplay: 0,
+            //autoplay: 0,
         },
     };
 
