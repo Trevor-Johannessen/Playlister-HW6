@@ -114,13 +114,13 @@ function ListCard(props) {
         >{playlist.name}</span>;
     }
 
-    let ownerEditingFeatures = (<div className='list-card-editing-button' onClick={(event) => {event.stopPropagation(); if(auth.user != null)store.duplicateList(playlist);}}>Duplicate</div>);
+    let ownerEditingFeatures = auth.user != null ? (<div className='list-card-editing-button' onClick={(event) => {event.stopPropagation(); store.duplicateList(playlist);}}>Duplicate</div>) : "";
     // make sure to check if auth is null
     if(auth.user != null && auth.user.username == playlist.ownerUsername)
     ownerEditingFeatures= (
     <div>
         <div className='list-card-editing-button' onClick={(event) => {event.stopPropagation(); store.markListForDeletion(playlist._id)}}>Delete</div>
-        <div className='list-card-editing-button' onClick={(event) => {event.stopPropagation(); if(auth.user != null)store.duplicateList(playlist);}}>Duplicate</div>
+        <div className='list-card-editing-button' onClick={(event) => {event.stopPropagation(); store.duplicateList(playlist);}}>Duplicate</div>
     </div>);
     // if published
     if(playlist.published != ""){

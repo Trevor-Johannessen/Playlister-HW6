@@ -173,19 +173,19 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.LOGOUT_USER: {
                 return setStore({
                     currentModal : CurrentModal.NONE,
-                    idNamePairs: store.idNamePairs,
+                    idNamePairs: [],
                     currentList: null,
-                    currentSongIndex: store.currentSongIndex,
-                    currentSong: null,
-                    newListCounter: store.newListCounter,
+                    currentSongIndex : 0,
+                    currentSong : null,
+                    newListCounter: 0,
                     listNameActive: false,
                     listIdMarkedForDeletion: null,
                     listMarkedForDeletion: null,
-                    storedPlaylists: store.storedPlaylists,
+                    storedPlaylists: [],
                     currentEditingList : null,
-                    searchCriteria: store.searchCriteria,
-                    sortMethod: store.sortMethod,
-                    player: store.player
+                    searchCriteria: "",
+                    sortMethod: SortingOption.NONE,
+                    player: null
                 })
             }
             // GET ALL THE LISTS SO WE CAN PRESENT THEM
@@ -563,6 +563,7 @@ function GlobalStoreContextProvider(props) {
             const response = await api.createPlaylist(newListName, playlist.songs, auth.user.email, auth.user.username);
             console.log("createNewList response: " + response.status);
             if (response.status === 201) {
+                auth.user.playlists.push("PLACEHOLDER")
                 if(store.searchCriteria == "")
                     store.loadLoggedInUsersPlaylists();
                 else
@@ -1109,6 +1110,12 @@ function GlobalStoreContextProvider(props) {
             }
         }
         asyncUpdateCurrentList();
+    }
+
+    store.handleLogout = function() {
+        storeReducer({
+            type: GlobalStoreActionType.LOGOUT_USER
+        });
     }
 
     store.renamePlaylist = function(newList){

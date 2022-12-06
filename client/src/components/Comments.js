@@ -36,13 +36,20 @@ export default function Comments(props){
         }
      }
 
+    let getCommentTooltip = () => {
+        if(auth.user == null)
+            return "Guests cannot comment.";
+        else if(store.currentList == null)
+            return "You must have a list open to comment."
+    }
+
     return (
         <div id='comments'>
             <div id='comment-card-holder'>
                 {comments}
             </div>
             <div id='comment-textbox'>
-                <Tooltip title={auth.user != null ? "" : "Guests cannot comment."}><TextField className='comment-textbox-mui' size='small' id="outlined-basic" label="Comment" disabled={auth.user == null} variant="outlined" sx={{width : '100%'}} onKeyDown={keyPress}/></Tooltip>
+                <Tooltip title={getCommentTooltip()}><TextField className='comment-textbox-mui' size='small' id="outlined-basic" label="Comment" disabled={auth.user == null || store.currentList == null} variant="outlined" sx={{width : '100%'}} onKeyDown={keyPress}/></Tooltip>
             </div>
         </div>
     )
