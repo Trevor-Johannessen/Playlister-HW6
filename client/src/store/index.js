@@ -265,7 +265,7 @@ function GlobalStoreContextProvider(props) {
             // UPDATE A LIST
             case GlobalStoreActionType.SET_CURRENT_LIST: {
                 return setStore({
-                    currentModal : CurrentModal.NONE,
+                    currentModal : store.currentModal,
                     idNamePairs: store.idNamePairs,
                     currentList: payload,
                     currentSongIndex: 0,
@@ -394,15 +394,15 @@ function GlobalStoreContextProvider(props) {
             }
             case GlobalStoreActionType.SET_PLAYER: {
                 return setStore({
-                    currentModal : CurrentModal.NONE,
+                    currentModal : store.currentModal,
                     idNamePairs: store.idNamePairs,
                     currentList: store.currentList,
                     currentSongIndex: 0,
                     currentSong: null,
                     newListCounter: store.newListCounter,
                     listNameActive: false,
-                    listIdMarkedForDeletion: null,
-                    listMarkedForDeletion: null,
+                    listIdMarkedForDeletion: store.listIdMarkedForDeletion,
+                    listMarkedForDeletion: store.listMarkedForDeletion,
                     storedPlaylists: store.storedPlaylists,
                     currentEditingList : store.currentEditingList,
                     searchCriteria: store.searchCriteria,

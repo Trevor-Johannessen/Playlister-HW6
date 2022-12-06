@@ -28,26 +28,19 @@ import Tooltip from '@mui/material/Tooltip';
 */
 function ListCard(props) {
     const { store } = useContext(GlobalStoreContext);
-    const [opened, setOpened] = useState(false);
     const [editingTitle, setEdit] = useState(false);
     const { playlist, selected } = props;
     const { auth } = useContext(AuthContext);
 
-    let reverseOpenState = () => {
-        setOpened(!opened);
-        opened ? console.log('opened') : console.log('closed');
-    }
 
     let openCard = () => {
         if(store.currentEditingList == null){
-            setOpened(true)
             store.setCurrentEditingList(playlist)
         }
         console.log(auth.user)
     }
 
     let closeCard = () => {
-        setOpened(false)
         store.closeCurrentEditingList();
     }
 
