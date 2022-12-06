@@ -104,7 +104,14 @@ function ListCard(props) {
         />)
     }else{
         // SET TITLE TO REGULAR TEXT
-        title = <span className='list-card-title'>{playlist.name}</span>;
+        title = <span 
+        className='list-card-title' 
+        onDoubleClick={(event) => {
+            event.stopPropagation();
+            if(!editingTitle && playlist.published == "")
+                setEdit(true);
+        }}
+        >{playlist.name}</span>;
     }
 
     let ownerEditingFeatures = (<div className='list-card-editing-button' onClick={(event) => {event.stopPropagation(); if(auth.user != null)store.duplicateList(playlist);}}>Duplicate</div>);
@@ -201,11 +208,7 @@ function ListCard(props) {
             onClick={(event) => {
                 store.setCurrentList(playlist)
             }}
-            onDoubleClick={(event) => {
-                event.stopPropagation();
-                if(!editingTitle && playlist.published == "")
-                    setEdit(true);
-            }}
+            
         >
             <div className={cardClass}>
                 {title}

@@ -313,7 +313,7 @@ function GlobalStoreContextProvider(props) {
                     listIdMarkedForDeletion: null,
                     listMarkedForDeletion: null,
                     storedPlaylists: store.storedPlaylists,
-                    currentEditingList : payload,
+                    currentEditingList : store.currentEditingList == payload ? store.currentEditingList : payload,
                     searchCriteria: store.searchCriteria,
                     sortMethod: store.sortMethod,
                     player: store.player
